@@ -1,5 +1,3 @@
-import time
-
 from connection import Connection
 from measurement_data import MeasurementData
 
@@ -20,14 +18,3 @@ class Handler:
 
     def cancel(self):
         Connection.kill = True
-        print(self.data.values)
-
-
-if __name__ == '__main__':
-    h = Handler()
-    h.handle('new_measurement', tuple())
-    x = 0
-    while x < 5:
-        x += 1
-        time.sleep(1)
-    h.cancel()

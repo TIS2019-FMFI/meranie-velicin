@@ -1,3 +1,5 @@
+import threading
+
 import wx
 from new_measurement import NewMeasurement
 from draw_graph import DrawGraph
@@ -7,8 +9,12 @@ from handler import Handler
 
 
 class Buttons(wx.Panel):
+
+    end = False
+
     def __init__(self, parent=None):
         self.handler = Handler()
+
         wx.Panel.__init__(self, parent=parent)
 
         self.font = wx.Font(20, wx.ROMAN, wx.NORMAL, wx.NORMAL)
@@ -81,9 +87,9 @@ class Buttons(wx.Panel):
         print('X', keycode)
 
     def stop_click(self, event):
-        self.handler.handle('cancel_measurement', tuple())
         pm = AfterMeasurement()
         pm.Show()
+        Buttons.end = True
 
     def new_meas(self, event):
         nm = NewMeasurement()
@@ -117,4 +123,13 @@ class Buttons(wx.Panel):
     def ok(self, event):
         pm = Measurement()
         pm.Show()
-        self.handler.handle('new_measurement', tuple())
+        Buttons.end = False
+        self.thread = threading.Thread(target=self.manager)
+        self.thread.start()
+
+    def manager(self):
+        if not self.end:
+            self.handler.handle('new_measurement', tuple())
+        while not self.end:
+            pass
+        self.handler.handle('cancel_measurement', tuple())
