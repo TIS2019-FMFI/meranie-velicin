@@ -11,3 +11,9 @@ class MeasurementData:
             return self.values[-1]
         except IndexError:
             return tuple()
+
+    def pickle(self):
+        pass
+
+    def unpickle(self):
+        pass

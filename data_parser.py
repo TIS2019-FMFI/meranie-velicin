@@ -21,11 +21,11 @@ class Parser:
         self.units = None
 
     def parse(self, bytestream):
-        '''
+        """
         podla toho ako to bude posielit ak takto:
         s = ser.read(14) a posleme "s" treba pridat tento riadok
         #bytestream = str(bytestream)
-        '''
+        """
         self.value = \
             int(bytestream[1:2]) * 1000 + \
             int(bytestream[2:3]) * 100 + \

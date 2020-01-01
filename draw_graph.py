@@ -1,7 +1,6 @@
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 from wx.lib.splitter import MultiSplitterWindow
-
 import button_panel
 from table import *
 
