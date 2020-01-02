@@ -38,4 +38,7 @@ class Connection:
         if self.kill:
             return
         self.scheduler.enter(1, 1, self.get_data)
-        self.data.insert_value(self.parser.parse(data_string))
+        try:
+            self.data.insert_value(self.parser.parse(data_string))
+        except ValueError:
+            pass
