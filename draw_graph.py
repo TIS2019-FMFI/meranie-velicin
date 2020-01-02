@@ -6,7 +6,7 @@ from table import *
 
 
 class MyGraph(wx.Panel):
-    # ....................................Rebeka........................................#
+
     def __init__(self, parent):
         wx.Panel.__init__(self, parent=parent)
         self.figure = Figure()
@@ -32,6 +32,7 @@ class MyGraph(wx.Panel):
 
 
 class DrawGraph(wx.Frame):
+
     def __init__(self):
         wx.Frame.__init__(self, parent=None, title='Po Merani', size=(1080, 720))
 

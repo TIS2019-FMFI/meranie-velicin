@@ -1,11 +1,12 @@
 import wx
-from handler import Handler
 
 
 class Buttons(wx.Panel):
 
-    def __init__(self, parent=None):
+    def __init__(self, handler, parent=None):
         wx.Panel.__init__(self, parent=parent)
+
+        self.handler = handler
 
         self.font = wx.Font(20, wx.ROMAN, wx.NORMAL, wx.NORMAL)
 
@@ -35,8 +36,6 @@ class Buttons(wx.Panel):
         self.all_buttons = []
 
         self.set_buttons()
-
-        self.handler = Handler()
 
     def set_buttons(self):
         for i in range(len(self.BUTTON_LABELS)):
@@ -81,16 +80,12 @@ class Buttons(wx.Panel):
         print('X', keycode)
 
     def load(self, event):
-        print(event)
-        files = "EXCEL (*.xlsx) |*.xlsx; | Všetky súbory |*"
+        files = "Pickle (*.pickle) |*.pickle; | Všetky súbory |*"
         with wx.FileDialog(self, "Zvoľte súbor", wildcard=files,
                            style=wx.RESIZE_BORDER | wx.DD_DIR_MUST_EXIST) as dialog:
             if dialog.ShowModal() == wx.ID_CANCEL:
                 return
-            path = dialog.GetPath()
-            print(path)
-
-        raise ValueError("Treba implementovat")
+            self.handler.handle('load', (dialog.GetPath(), ))
 
     def new_meas(self, event):
         self.handler.handle('new_measurement_window', tuple())
@@ -102,7 +97,11 @@ class Buttons(wx.Panel):
         self.handler.handle('after_window', tuple())
 
     def save(self, event):
-        self.handler.handle('save', tuple())
+        # TODO inform user about result of saving data (saved/error)
+        if self.handler.handle('save', tuple()):
+            pass
+        else:
+            pass
 
     def export(self, event):
         self.handler.handle('export', tuple())

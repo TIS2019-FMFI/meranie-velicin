@@ -34,14 +34,7 @@ class Parser:
         dic = {0: 1, 1: 1000, 2: 100, 4: 10}
         if str(bytestream[0]) == '-':
             self.value *= -1
-        # self.value /= 1*(10**(5 - int(bytestream[6:7])))
         self.value /= dic.get(int(bytestream[6:7]))
         self.units = scale.get((bytestream[9:10].hex()), '')
         self.units += all_units.get((bytestream[10:11].hex()), '')
         return self.value, self.units
-
-    def get_value(self):
-        return self.value
-
-    def get_units(self):
-        return self.units
