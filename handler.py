@@ -1,7 +1,7 @@
 import threading
 
 from connection import Connection
-from measurement_data import MeasurementData
+from measurement_data import *
 from measurement import Measurement
 from after_measurement import AfterMeasurement
 from new_measurement import NewMeasurement
@@ -21,20 +21,19 @@ class Handler:
         self.calls = {'new_measurement': self.new_measurement, 'cancel_measurement': self.cancel,
                       'start_threads': self.start_threads, 'after_window': self.after_window,
                       'new_measurement_window': self.new_measurement_window, 'save': self.save,
-                      'show_graph': self.graph_window, 'export': self.export}
+                      'show_graph': self.graph_window, 'export': self.export, 'load': self.load}
 
     def handle(self, key, param):
         return self.calls[key](*param)
 
-    @staticmethod
-    def new_measurement_window():
-        nm = NewMeasurement()
+    def new_measurement_window(self):
+        nm = NewMeasurement(self)
         nm.Show()
+        self.data.file_name = nm.get_file_name()
 
-    @staticmethod
-    def after_window():
+    def after_window(self):
         Handler.end = True
-        pm = AfterMeasurement()
+        pm = AfterMeasurement(self)
         pm.Show()
 
     @staticmethod
@@ -43,13 +42,17 @@ class Handler:
         nm.Show()
 
     def start_threads(self):
-        self.measurement_window = Measurement(self.data)
+        self.measurement_window = Measurement(self, self.data)
         self.measurement_window.Show()
         self.thread.start()
         Handler.end = False
 
     def save(self):
-        self.data.pickle()
+        return self.data.pickle()
+
+    def load(self, *args):
+        self.data = unpickle(args[0])
+        print(self.data.values)
 
     def export(self):
         pass

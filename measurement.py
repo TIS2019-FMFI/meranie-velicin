@@ -10,14 +10,15 @@ class Measurement(wx.Frame):
 
     kill = False
 
-    def __init__(self, measurement_data):
+    def __init__(self, handler, measurement_data):
+
         wx.Frame.__init__(self, parent=None, title="Meranie", size=(1080, 720))
 
         self.measurement_data = measurement_data
         self.thread = Thread(target=self.get_value)
 
         splitter = MultiSplitterWindow(self)
-        buttons = button_panel.Buttons(splitter)
+        buttons = button_panel.Buttons(handler, splitter)
 
         buttons.show_button('Zastaviť meranie')
 

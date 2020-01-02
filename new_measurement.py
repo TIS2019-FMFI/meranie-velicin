@@ -4,6 +4,7 @@ import wx
 
 
 class PanelWindow(wx.Panel):
+
     def __init__(self, parent, button_panel):
         wx.Panel.__init__(self, parent=parent)
         self.button_panel = button_panel
@@ -51,11 +52,12 @@ ref_class je referencia na typ objektu"""
 
 
 class NewMeasurement(wx.Frame):
-    def __init__(self, parent=None):
+
+    def __init__(self, handler, parent=None):
         wx.Frame.__init__(self, parent=parent, title='Nové meranie', size=(1080, 720))
         splitter = MultiSplitterWindow(self)
 
-        self.buttons = button_panel.Buttons(splitter)
+        self.buttons = button_panel.Buttons(handler, splitter)
 
         self.buttons.show_button('OK')
         b = self.buttons.get_button('OK')
@@ -70,3 +72,6 @@ class NewMeasurement(wx.Frame):
     def ok(self, event):
         self.buttons.ok(event)
         self.Hide()
+
+    def get_file_name(self):
+        return 'file_test'

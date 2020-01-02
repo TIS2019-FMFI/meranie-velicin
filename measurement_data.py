@@ -1,6 +1,10 @@
+import pickle
+
+
 class MeasurementData:
 
     def __init__(self):
+        self.file_name = None
         self.values = []
 
     def insert_value(self, value):
@@ -13,7 +17,13 @@ class MeasurementData:
             return tuple()
 
     def pickle(self):
-        pass
+        print(self.file_name, self.values)
+        if self.file_name is None:
+            return False
+        with open('data/' + self.file_name + '.pickle', 'wb') as output:
+            pickle.dump(obj=self, file=output)
 
-    def unpickle(self):
-        pass
+
+def unpickle(path):
+    with open(path, 'rb') as read:
+        return pickle.load(read)

@@ -4,7 +4,7 @@ import random
 
 
 class MyGrid(wx.Panel):
-    # ....................................Daska........................................#
+
     def __init__(self, parent, buttons):
         wx.Panel.__init__(self, parent=parent)
 
