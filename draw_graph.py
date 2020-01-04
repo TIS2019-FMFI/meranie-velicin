@@ -37,7 +37,7 @@ class DrawGraph(wx.Frame):
         wx.Frame.__init__(self, parent=None, title='Po Merani', size=(1080, 720), pos=(243, 56))
 
         splitter = MultiSplitterWindow(self)
-        self.buttons = button_panel.Buttons(splitter)
+        self.buttons = button_panel.Buttons(None, splitter)
 
         x, y = 0, 0
         gap = 30
