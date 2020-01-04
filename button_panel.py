@@ -14,23 +14,26 @@ class Buttons(wx.Panel):
                               'Uložiť meranie', 'Načítať meranie', 'OK']
         self.func = [self.stop_click, self.new_meas, self.display_graph, self.export, self.save, self.load, self.ok]
 
-        new = wx.ID_ANY
-        display = wx.ID_ANY
-        export = wx.ID_ANY
-        save = wx.ID_ANY
-        load = wx.ID_ANY
-        self.Bind(wx.EVT_MENU, self.new_meas, id=new)
-        self.Bind(wx.EVT_MENU, self.display_graph, id=display)
-        self.Bind(wx.EVT_MENU, self.export, id=export)
-        self.Bind(wx.EVT_MENU, self.save, id=save)
-        self.Bind(wx.EVT_MENU, self.load, id=load)
+        newId = 1
+        displayId = 2
+        exportId = 3
+        saveId = 4
+        loadId = 5
+        quitId = 6
+        self.Bind(wx.EVT_MENU, self.new_meas, id=newId)
+        self.Bind(wx.EVT_MENU, self.display_graph, id=displayId)
+        self.Bind(wx.EVT_MENU, self.export, id=exportId)
+        self.Bind(wx.EVT_MENU, self.save, id=saveId)
+        self.Bind(wx.EVT_MENU, self.load, id=loadId)
+        self.Bind(wx.EVT_MENU, self.stop_click, id=quitId)
 
         self.accel_tbl = wx.AcceleratorTable([
-            (wx.ACCEL_CTRL, ord('N'), new),
-            (wx.ACCEL_CTRL, ord('G'), display),
-            (wx.ACCEL_CTRL, ord('E'), export),
-            (wx.ACCEL_CTRL, ord('S'), save),
-            (wx.ACCEL_CTRL, ord('L'), load)])
+            (wx.ACCEL_CTRL, ord('N'), newId),
+            (wx.ACCEL_CTRL, ord('G'), displayId),
+            (wx.ACCEL_CTRL, ord('E'), exportId),
+            (wx.ACCEL_CTRL, ord('S'), saveId),
+            (wx.ACCEL_CTRL, ord('L'), loadId),
+            (wx.ACCEL_CTRL, ord('Q'), quitId)])
         self.SetAcceleratorTable(self.accel_tbl)
 
         self.all_buttons = []
@@ -88,6 +91,7 @@ class Buttons(wx.Panel):
             self.handler.handle('load', (dialog.GetPath(), ))
 
     def new_meas(self, event):
+        #self.parent.Hide()
         self.handler.handle('new_measurement_window', tuple())
 
     def ok(self, event):

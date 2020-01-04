@@ -34,14 +34,21 @@ class MyGraph(wx.Panel):
 class DrawGraph(wx.Frame):
 
     def __init__(self):
-        wx.Frame.__init__(self, parent=None, title='Po Merani', size=(1080, 720))
+        wx.Frame.__init__(self, parent=None, title='Po Merani', size=(1080, 720), pos=(243, 56))
 
         splitter = MultiSplitterWindow(self)
         self.buttons = button_panel.Buttons(splitter)
 
+        x, y = 0, 0
+        gap = 30
+
         for b in self.buttons.get_buttons():
             if b.GetLabel() not in ('Zastaviť meranie', 'Zobraziť graf', 'OK'):
                 b.Show()
+                b.SetPosition((x, y))
+                x += b.GetTextExtent(b.GetLabel()).GetWidth() + gap
+                if b.GetLabel().startswith('Nov'):
+                    b.Bind(wx.EVT_BUTTON, self.new_meas)
 
         splitter.AppendWindow(self.buttons)
         grid = MyGrid(splitter, self.buttons)
@@ -52,3 +59,7 @@ class DrawGraph(wx.Frame):
         graph.draw()
 
         splitter.SetOrientation(wx.VERTICAL)
+
+    def new_meas(self, evt):
+        self.Close()
+        self.buttons.new_meas(evt)
