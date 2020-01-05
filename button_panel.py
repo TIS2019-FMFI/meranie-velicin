@@ -14,26 +14,26 @@ class Buttons(wx.Panel):
                               'Uložiť meranie', 'Načítať meranie', 'OK']
         self.func = [self.stop_click, self.new_meas, self.display_graph, self.export, self.save, self.load, self.ok]
 
-        newId = 1
-        displayId = 2
-        exportId = 3
-        saveId = 4
-        loadId = 5
-        quitId = 6
-        self.Bind(wx.EVT_MENU, self.new_meas, id=newId)
-        self.Bind(wx.EVT_MENU, self.display_graph, id=displayId)
-        self.Bind(wx.EVT_MENU, self.export, id=exportId)
-        self.Bind(wx.EVT_MENU, self.save, id=saveId)
-        self.Bind(wx.EVT_MENU, self.load, id=loadId)
-        self.Bind(wx.EVT_MENU, self.stop_click, id=quitId)
+        new_id = 1
+        display_id = 2
+        export_id = 3
+        save_id = 4
+        load_id = 5
+        quit_id = 6
+        self.Bind(wx.EVT_MENU, self.new_meas, id=new_id)
+        self.Bind(wx.EVT_MENU, self.display_graph, id=display_id)
+        self.Bind(wx.EVT_MENU, self.export, id=export_id)
+        self.Bind(wx.EVT_MENU, self.save, id=save_id)
+        self.Bind(wx.EVT_MENU, self.load, id=load_id)
+        self.Bind(wx.EVT_MENU, self.stop_click, id=quit_id)
 
         self.accel_tbl = wx.AcceleratorTable([
-            (wx.ACCEL_CTRL, ord('N'), newId),
-            (wx.ACCEL_CTRL, ord('G'), displayId),
-            (wx.ACCEL_CTRL, ord('E'), exportId),
-            (wx.ACCEL_CTRL, ord('S'), saveId),
-            (wx.ACCEL_CTRL, ord('L'), loadId),
-            (wx.ACCEL_CTRL, ord('Q'), quitId)])
+            (wx.ACCEL_CTRL, ord('N'), new_id),
+            (wx.ACCEL_CTRL, ord('G'), display_id),
+            (wx.ACCEL_CTRL, ord('E'), export_id),
+            (wx.ACCEL_CTRL, ord('S'), save_id),
+            (wx.ACCEL_CTRL, ord('L'), load_id),
+            (wx.ACCEL_CTRL, ord('Q'), quit_id)])
         self.SetAcceleratorTable(self.accel_tbl)
 
         self.all_buttons = []
@@ -91,7 +91,7 @@ class Buttons(wx.Panel):
             self.handler.handle('load', (dialog.GetPath(), ))
 
     def new_meas(self, event):
-        #self.parent.Hide()
+        # self.parent.Hide()
         self.handler.handle('new_measurement_window', tuple())
 
     def ok(self, event):
