@@ -61,10 +61,3 @@ def unpickle(path):
     with open(path, 'rb') as read:
         return pickle.load(read)
 
-
-if __name__ == '__main__':
-    d = MeasurementData()
-    d.file_name = 'test_export'
-    for x in range(0, 100):
-        d.values.append((x, random.randrange(500)))
-    d.export_to_excel()
