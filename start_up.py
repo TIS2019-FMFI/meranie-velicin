@@ -7,7 +7,7 @@ from handler import Handler
 class Start(wx.Frame):
 
     def __init__(self):
-        wx.Frame.__init__(self, parent=None, title='Start', size=(1080, 720))
+        wx.Frame.__init__(self, parent=None, title='Start', size=(1080, 720), pos=(243, 56))
 
         self.handler = Handler()
         self.buttons = button_panel.Buttons(self.handler, parent=self)

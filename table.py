@@ -1,5 +1,10 @@
 import wx.grid
 from wx import *
+import random
+from gtts import gTTS
+from io import BytesIO
+import pygame
+
 
 
 class Table(wx.Panel):
@@ -8,6 +13,9 @@ class Table(wx.Panel):
         wx.Panel.__init__(self, parent=parent)
 
         self.upper_panel = parent
+
+        self.read = False
+        pygame.init()
 
         self.grid = wx.grid.Grid(self, -1)
         wx.Accessible(self.grid)
@@ -75,6 +83,16 @@ class Table(wx.Panel):
         return self.rows * 75
 
     def get_text(self, event):
+        if not self.read:
+            self.read = True
+            return
         row = event.GetRow()
         col = event.GetCol()
-        return self.grid.GetCellValue(row, col)
+
+        tts = gTTS(text=str(self.grid.GetCellValue(row, col)), lang='sk')
+        fp = BytesIO()
+        tts.write_to_fp(fp)
+        fp.seek(0)
+        pygame.mixer.init()
+        pygame.mixer.music.load(fp)
+        pygame.mixer.music.play()
