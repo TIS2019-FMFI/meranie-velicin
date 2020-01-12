@@ -37,9 +37,7 @@ class PanelWindow(wx.Panel):
 
         for e in self._all_elements:
             if type(e) == wx._core.TextCtrl:
-                #e.SetLabel('0')
-                e.SetFocus()
-                break
+                e.SetLabel('0')
 
     def add_element(self, ref_class, pos, text=None):
         """Prida prvok ref_class na poziciu pos s textom text.
@@ -56,7 +54,7 @@ ref_class je referencia na typ objektu"""
 class NewMeasurement(wx.Frame):
 
     def __init__(self, handler, parent=None):
-        wx.Frame.__init__(self, parent=parent, title='Nové meranie', size=(1080, 720), pos=(243, 56))
+        wx.Frame.__init__(self, parent=parent, title='Nové meranie', size=(1080, 720))
         splitter = MultiSplitterWindow(self)
 
         self.buttons = button_panel.Buttons(handler, splitter)
