@@ -17,9 +17,25 @@ class Start(wx.Frame):
                 if i.GetLabel() == 'Nové meranie':
                     i.SetPosition((250, 300))
                     i.Show()
+                    i.Bind(wx.EVT_BUTTON, self.new_click)
                 elif i.GetLabel() == 'Načítať meranie':
                     i.SetPosition((550, 300))
                     i.Show()
+                    i.Bind(wx.EVT_BUTTON, self.load_click)
+
+    def new_click(self, evt):
+        self.Close()
+        self.buttons.new_meas(evt)
+
+    def load_click(self, evt):
+        self.Close()
+        self.buttons.load(evt)
+
+                
+        
+        
+
+        
 
 
 if __name__ == "__main__":
