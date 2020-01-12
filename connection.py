@@ -8,9 +8,8 @@ from data_parser import Parser
 
 class Connection:
 
-    kill = False
-
     def __init__(self, data):
+        self.kill = False
         self.data = data
         self.parser = Parser()
         self.scheduler = sched.scheduler(time.time, time.sleep)

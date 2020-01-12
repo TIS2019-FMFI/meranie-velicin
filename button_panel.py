@@ -80,8 +80,9 @@ class Buttons(wx.Panel):
         print('X', keycode)
 
     def load(self, event):
+        dir = r'data'
         files = "Pickle (*.pickle) |*.pickle; | Všetky súbory |*"
-        with wx.FileDialog(self, "Zvoľte súbor", wildcard=files,
+        with wx.FileDialog(self, "Zvoľte súbor", wildcard=files, defaultDir=dir,
                            style=wx.RESIZE_BORDER | wx.DD_DIR_MUST_EXIST) as dialog:
             if dialog.ShowModal() == wx.ID_CANCEL:
                 return
@@ -97,11 +98,7 @@ class Buttons(wx.Panel):
         self.handler.handle('after_window', tuple())
 
     def save(self, event):
-        # TODO inform user about result of saving data (saved/error)
-        if self.handler.handle('save', tuple()):
-            pass
-        else:
-            pass
+        self.handler.handle('save', tuple())
 
     def export(self, event):
         self.handler.handle('export', tuple())

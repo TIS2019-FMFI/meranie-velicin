@@ -17,6 +17,6 @@ class AfterMeasurement(wx.Frame):
                 b.Show()
 
         splitter.AppendWindow(buttons)
-        grid = MyGrid(splitter, buttons)
+        grid = Table(splitter, buttons)
         splitter.AppendWindow(grid, grid.get_height() + 20)
         splitter.SetOrientation(wx.VERTICAL)

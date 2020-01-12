@@ -10,11 +10,10 @@ from draw_graph import DrawGraph
 
 class Handler:
 
-    end = False
-
     def __init__(self):
         self.thread = threading.Thread(target=self.manager)
 
+        self.end = False
         self.measurement_window = None
         self.data = MeasurementData()
         self.connection = Connection(self.data)
@@ -32,7 +31,7 @@ class Handler:
         self.data.file_name = nm.get_file_name()
 
     def after_window(self):
-        Handler.end = True
+        self.end = True
         pm = AfterMeasurement(self)
         pm.Show()
 
@@ -45,27 +44,32 @@ class Handler:
         self.measurement_window = Measurement(self, self.data)
         self.measurement_window.Show()
         self.thread.start()
-        Handler.end = False
+        self.end = False
 
     def save(self):
-        return self.data.pickle()
+        if self.data.pickle():
+            pass
+        else:
+            pass
 
     def load(self, *args):
         self.data = unpickle(args[0])
-        print(self.data.values)
 
     def export(self):
-        pass
+        if self.data.export_to_excel():
+            pass
+        else:
+            pass
 
     def new_measurement(self):
-        Connection.kill = False
-        Measurement.kill = False
+        self.connection.kill = False
+        self.measurement_window.kill = False
         self.measurement_window.thread.start()
         self.connection.thread.start()
 
     def cancel(self):
-        Connection.kill = True
-        Measurement.kill = True
+        self.connection.kill = True
+        self.measurement_window.kill = True
         print(self.data.values)
 
     def manager(self):

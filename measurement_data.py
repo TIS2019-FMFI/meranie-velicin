@@ -1,5 +1,4 @@
 import pickle
-import random
 import xlsxwriter
 import xlsxwriter.exceptions
 
@@ -8,10 +7,12 @@ class MeasurementData:
 
     def __init__(self):
         self.file_name = None
+        self.period = 1
         self.values = []
 
     def insert_value(self, value):
-        self.values.append(value)
+        time = (1 + len(self.values)) * self.period
+        self.values.append((time, value))
 
     def get_last_value(self):
         try:
@@ -23,9 +24,9 @@ class MeasurementData:
         workbook = xlsxwriter.Workbook(self.file_name + '.xlsx')
         worksheet = workbook.add_worksheet()
         col = 0
-        for items in self.values:
-            worksheet.write(0, col, items[0])
-            worksheet.write(1, col, items[1])
+        for value in self.values:
+            worksheet.write(0, col, value[0])
+            worksheet.write(1, col, value[1][0])
             col += 1
 
         chart = workbook.add_chart({'type': 'line'})
@@ -36,8 +37,8 @@ class MeasurementData:
         try:
             workbook.close()
         except xlsxwriter.exceptions.FileCreateError:
-            # TODO handle file write exception if target file is open
-            return
+            return False
+        return True
 
     def get_end_column(self):
         length = len(self.values) - 1
@@ -50,14 +51,13 @@ class MeasurementData:
         return res
 
     def pickle(self):
-        print(self.file_name, self.values)
         if self.file_name is None:
             return False
         with open('data/' + self.file_name + '.pickle', 'wb') as output:
             pickle.dump(obj=self, file=output)
+        return True
 
 
 def unpickle(path):
     with open(path, 'rb') as read:
         return pickle.load(read)
-

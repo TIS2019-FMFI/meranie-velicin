@@ -1,3 +1,5 @@
+import random
+
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 from wx.lib.splitter import MultiSplitterWindow
@@ -26,6 +28,7 @@ class MyGraph(wx.Panel):
             y.append(random.randrange(10, 40))
         self.axes.plot(x, y)
 
+    # TODO parameter names shadowing built-ins
     def change_axes(self, min, max):
         self.axes.set_ylim(float(min), float(max))
         self.canvas.draw()
@@ -44,7 +47,7 @@ class DrawGraph(wx.Frame):
                 b.Show()
 
         splitter.AppendWindow(self.buttons)
-        grid = MyGrid(splitter, self.buttons)
+        grid = Table(splitter, self.buttons)
         splitter.AppendWindow(grid, grid.get_height() + 20)
 
         graph = MyGraph(splitter)
