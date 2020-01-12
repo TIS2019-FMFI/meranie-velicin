@@ -14,23 +14,26 @@ class Buttons(wx.Panel):
                               'Uložiť meranie', 'Načítať meranie', 'OK']
         self.func = [self.stop_click, self.new_meas, self.display_graph, self.export, self.save, self.load, self.ok]
 
-        new = wx.ID_ANY
-        display = wx.ID_ANY
-        export = wx.ID_ANY
-        save = wx.ID_ANY
-        load = wx.ID_ANY
-        self.Bind(wx.EVT_MENU, self.new_meas, id=new)
-        self.Bind(wx.EVT_MENU, self.display_graph, id=display)
-        self.Bind(wx.EVT_MENU, self.export, id=export)
-        self.Bind(wx.EVT_MENU, self.save, id=save)
-        self.Bind(wx.EVT_MENU, self.load, id=load)
+        new_id = 1
+        display_id = 2
+        export_id = 3
+        save_id = 4
+        load_id = 5
+        quit_id = 6
+        self.Bind(wx.EVT_MENU, self.new_meas, id=new_id)
+        self.Bind(wx.EVT_MENU, self.display_graph, id=display_id)
+        self.Bind(wx.EVT_MENU, self.export, id=export_id)
+        self.Bind(wx.EVT_MENU, self.save, id=save_id)
+        self.Bind(wx.EVT_MENU, self.load, id=load_id)
+        self.Bind(wx.EVT_MENU, self.stop_click, id=quit_id)
 
         self.accel_tbl = wx.AcceleratorTable([
-            (wx.ACCEL_CTRL, ord('N'), new),
-            (wx.ACCEL_CTRL, ord('G'), display),
-            (wx.ACCEL_CTRL, ord('E'), export),
-            (wx.ACCEL_CTRL, ord('S'), save),
-            (wx.ACCEL_CTRL, ord('L'), load)])
+            (wx.ACCEL_CTRL, ord('N'), new_id),
+            (wx.ACCEL_CTRL, ord('G'), display_id),
+            (wx.ACCEL_CTRL, ord('E'), export_id),
+            (wx.ACCEL_CTRL, ord('S'), save_id),
+            (wx.ACCEL_CTRL, ord('L'), load_id),
+            (wx.ACCEL_CTRL, ord('Q'), quit_id)])
         self.SetAcceleratorTable(self.accel_tbl)
 
         self.all_buttons = []
@@ -80,15 +83,15 @@ class Buttons(wx.Panel):
         print('X', keycode)
 
     def load(self, event):
-        dir = r'data'
         files = "Pickle (*.pickle) |*.pickle; | Všetky súbory |*"
-        with wx.FileDialog(self, "Zvoľte súbor", wildcard=files, defaultDir=dir,
+        with wx.FileDialog(self, "Zvoľte súbor", wildcard=files,
                            style=wx.RESIZE_BORDER | wx.DD_DIR_MUST_EXIST) as dialog:
             if dialog.ShowModal() == wx.ID_CANCEL:
                 return
             self.handler.handle('load', (dialog.GetPath(), ))
 
     def new_meas(self, event):
+        # self.parent.Hide()
         self.handler.handle('new_measurement_window', tuple())
 
     def ok(self, event):
@@ -98,7 +101,11 @@ class Buttons(wx.Panel):
         self.handler.handle('after_window', tuple())
 
     def save(self, event):
-        self.handler.handle('save', tuple())
+        # TODO inform user about result of saving data (saved/error)
+        if self.handler.handle('save', tuple()):
+            pass
+        else:
+            pass
 
     def export(self, event):
         self.handler.handle('export', tuple())
