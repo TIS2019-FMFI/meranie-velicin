@@ -2,6 +2,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 from wx.lib.splitter import MultiSplitterWindow
 import button_panel
+import random
 from table import *
 
 
@@ -52,7 +53,7 @@ class DrawGraph(wx.Frame):
                     b.Bind(wx.EVT_BUTTON, self.new_meas)
 
         splitter.AppendWindow(self.buttons)
-        grid = MyGrid(splitter, self.buttons)
+        grid = Table(splitter, self.buttons)
         splitter.AppendWindow(grid, grid.get_height() + 20)
 
         graph = MyGraph(splitter)
