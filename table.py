@@ -6,7 +6,8 @@ from io import BytesIO
 import pygame
 
 
-class MyGrid(wx.Panel):
+
+class Table(wx.Panel):
 
     def __init__(self, parent, buttons):
         wx.Panel.__init__(self, parent=parent)
@@ -23,7 +24,6 @@ class MyGrid(wx.Panel):
         self.grid.SetDefaultColSize(75)
         self.rows, self.columns = 2, 15
         self.pointer = -1
-        row_labels = ['Čas', 'Hodnota']
         self.grid.CreateGrid(self.rows, self.columns)
         self.grid.SetColLabelSize(0)
         self.grid.EnableGridLines(True)
@@ -35,11 +35,9 @@ class MyGrid(wx.Panel):
         sizer.Add(self.grid, 1, wx.EXPAND)
         self.SetSizer(sizer)
 
+        row_labels = ['Čas', 'Hodnota']
         for i in range(self.rows):
             self.grid.SetRowLabelValue(i, row_labels[i])
-
-        for i in range(20):
-            self.add(i * 4, random.randrange(10, 40))
 
         random_id = wx.ID_ANY
         self.Bind(wx.EVT_MENU, self.exit, id=random_id)
@@ -63,22 +61,24 @@ class MyGrid(wx.Panel):
 
     def add(self, time, value):
         if self.pointer + 1 == self.columns:
-            self.resize(5)
+            self.resize(1)
         self.pointer += 1
 
-        self.grid.SetCellValue(0, self.pointer, str(time))
-        self.grid.SetCellValue(1, self.pointer, str(value))
+        self.grid.SetReadOnly(0, self.pointer)
+        self.grid.SetReadOnly(1, self.pointer)
         self.grid.SetCellFont(0, self.pointer, self.font)
         self.grid.SetCellFont(1, self.pointer, self.font)
         self.grid.SetCellAlignment(0, self.pointer,
                                    wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
         self.grid.SetCellAlignment(1, self.pointer,
                                    wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
-        self.grid.SetReadOnly(0, self.pointer)
-        self.grid.SetReadOnly(1, self.pointer)
+        self.grid.SetCellValue(0, self.pointer, str(time))
+        self.grid.SetCellValue(1, self.pointer, str(value))
 
+        # TODO updating possibly unnecessary
         self.Update()
 
+    # TODO returns a constant
     def get_height(self):
         return self.rows * 75
 

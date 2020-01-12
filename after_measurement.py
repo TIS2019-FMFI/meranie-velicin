@@ -25,8 +25,6 @@ class AfterMeasurement(wx.Frame):
                 elif b.GetLabel().startswith('Zobraz'):
                     b.Bind(wx.EVT_BUTTON, self.graph)
 
-        splitter.AppendWindow(self.buttons)
-        grid = MyGrid(splitter, self.buttons)
         splitter.AppendWindow(grid, grid.get_height() + 20)
 
         splitter.SetOrientation(wx.VERTICAL)
