@@ -1,5 +1,3 @@
-import threading
-
 from connection import Connection
 from measurement_data import *
 from measurement import Measurement
@@ -11,14 +9,12 @@ from draw_graph import DrawGraph
 class Handler:
 
     def __init__(self):
-        self.thread = threading.Thread(target=self.manager)
-
-        self.end = False
+        self.parent_window = None
         self.measurement_window = None
-        self.data = MeasurementData()
+        self.data = None
         self.connection = Connection(self.data)
         self.calls = {'new_measurement': self.new_measurement, 'cancel_measurement': self.cancel,
-                      'start_threads': self.start_threads, 'after_window': self.after_window,
+                      'after_window': self.after_window,
                       'new_measurement_window': self.new_measurement_window, 'save': self.save,
                       'show_graph': self.graph_window, 'export': self.export, 'load': self.load}
 
@@ -26,25 +22,20 @@ class Handler:
         return self.calls[key](*param)
 
     def new_measurement_window(self):
-        nm = NewMeasurement(self)
-        nm.Show()
-        self.data.file_name = nm.get_file_name()
+        self.parent_window.Close()
+        self.parent_window = NewMeasurement(self)
+        self.parent_window.Show()
+        self.data = MeasurementData()
+        self.connection.data = self.data
+        self.data.file_name = self.parent_window.get_file_name()
 
     def after_window(self):
-        self.end = True
-        pm = AfterMeasurement(self)
-        pm.Show()
+        self.parent_window = AfterMeasurement(self)
+        self.parent_window.Show()
 
-    @staticmethod
-    def graph_window():
-        nm = DrawGraph()
-        nm.Show()
-
-    def start_threads(self):
-        self.measurement_window = Measurement(self, self.data)
-        self.measurement_window.Show()
-        self.thread.start()
-        self.end = False
+    def graph_window(self):
+        self.parent_window = DrawGraph(self)
+        self.parent_window.Show()
 
     def save(self):
         if self.data.pickle():
@@ -54,6 +45,8 @@ class Handler:
 
     def load(self, *args):
         self.data = unpickle(args[0])
+        print(self.data.values)
+        self.handle('after_window', tuple())
 
     def export(self):
         if self.data.export_to_excel():
@@ -62,19 +55,22 @@ class Handler:
             pass
 
     def new_measurement(self):
+        self.measurement_window = Measurement(self, self.data)
+        self.measurement_window.Show()
+        self.parent_window.Close()
+        self.parent_window = self.measurement_window
         self.connection.kill = False
         self.measurement_window.kill = False
         self.measurement_window.thread.start()
-        self.connection.thread.start()
+        try:
+            self.connection.thread.start()
+        except RuntimeError:
+            self.connection.create_thread()
+            self.connection.thread.start()
 
     def cancel(self):
+        self.parent_window.Close()
         self.connection.kill = True
         self.measurement_window.kill = True
+        self.handle('after_window', tuple())
         print(self.data.values)
-
-    def manager(self):
-        if not self.end:
-            self.handle('new_measurement', tuple())
-        while not self.end:
-            pass
-        self.handle('cancel_measurement', tuple())

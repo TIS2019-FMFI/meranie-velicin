@@ -1,11 +1,17 @@
 import wx.grid
 from wx import *
+from gtts import gTTS
+from io import BytesIO
+import pygame
 
 
 class Table(wx.Panel):
 
     def __init__(self, parent, buttons):
         wx.Panel.__init__(self, parent=parent)
+
+        self.read = False
+        pygame.init()
 
         self.upper_panel = parent
 
@@ -56,16 +62,19 @@ class Table(wx.Panel):
             self.resize(1)
         self.pointer += 1
 
-        self.grid.SetReadOnly(0, self.pointer)
-        self.grid.SetReadOnly(1, self.pointer)
-        self.grid.SetCellFont(0, self.pointer, self.font)
-        self.grid.SetCellFont(1, self.pointer, self.font)
-        self.grid.SetCellAlignment(0, self.pointer,
-                                   wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
-        self.grid.SetCellAlignment(1, self.pointer,
-                                   wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
-        self.grid.SetCellValue(0, self.pointer, str(time))
-        self.grid.SetCellValue(1, self.pointer, str(value))
+        try:
+            self.grid.SetReadOnly(0, self.pointer)
+            self.grid.SetReadOnly(1, self.pointer)
+            self.grid.SetCellFont(0, self.pointer, self.font)
+            self.grid.SetCellFont(1, self.pointer, self.font)
+            self.grid.SetCellAlignment(0, self.pointer,
+                                       wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
+            self.grid.SetCellAlignment(1, self.pointer,
+                                       wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
+            self.grid.SetCellValue(0, self.pointer, str(time))
+            self.grid.SetCellValue(1, self.pointer, str(value))
+        except RuntimeError:
+            return
 
         # TODO updating possibly unnecessary
         self.Update()
@@ -75,6 +84,16 @@ class Table(wx.Panel):
         return self.rows * 75
 
     def get_text(self, event):
+        if not self.read:
+            self.read = True
+            return
         row = event.GetRow()
         col = event.GetCol()
-        return self.grid.GetCellValue(row, col)
+
+        tts = gTTS(text=str(self.grid.GetCellValue(row, col)), lang='sk')
+        fp = BytesIO()
+        tts.write_to_fp(fp)
+        fp.seek(0)
+        pygame.mixer.init()
+        pygame.mixer.music.load(fp)
+        pygame.mixer.music.play()

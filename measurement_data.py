@@ -21,6 +21,7 @@ class MeasurementData:
             return tuple()
 
     def export_to_excel(self):
+        print('exporting')
         workbook = xlsxwriter.Workbook(self.file_name + '.xlsx')
         worksheet = workbook.add_worksheet()
         col = 0
@@ -51,6 +52,7 @@ class MeasurementData:
         return res
 
     def pickle(self):
+        print('saving')
         if self.file_name is None:
             return False
         with open('data/' + self.file_name + '.pickle', 'wb') as output:

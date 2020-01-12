@@ -13,10 +13,12 @@ class Connection:
         self.data = data
         self.parser = Parser()
         self.scheduler = sched.scheduler(time.time, time.sleep)
-        self.thread = threading.Thread(target=self.start_measurement)
+        self.thread = threading.Thread(target=self.start_measurement, daemon=True)
         self.port = None
 
     def establish_connection(self):
+        if self.port is not None:
+            return True
         ports = serial.tools.list_ports.comports()
         if len(ports) == 0:
             os.system(r'driver\windows_10\CP210xVCPInstaller_x64.exe')
@@ -41,3 +43,6 @@ class Connection:
             self.data.insert_value(self.parser.parse(data_string))
         except ValueError:
             pass
+
+    def create_thread(self):
+        self.thread = threading.Thread(target=self.start_measurement, daemon=True)
