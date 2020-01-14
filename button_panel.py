@@ -10,11 +10,10 @@ class Buttons(wx.Panel):
 
         self.font = wx.Font(20, wx.ROMAN, wx.NORMAL, wx.NORMAL)
 
-        self.BUTTON_LABELS = ['Zastaviť meranie', 'Nové meranie', 'Zobraziť graf', 'Export do Excelu',
+        self.button_labels = ['Zastaviť meranie', 'Nové meranie', 'Zobraziť graf', 'Export do Excelu',
                               'Uložiť meranie', 'Načítať meranie', 'OK']
-        self.func = [self.stop_click, self.new_measurement, self.display_graph, self.export, self.save, self.load,
+        self.functions = [self.stop_click, self.new_measurement, self.display_graph, self.export, self.save, self.load,
                      self.start_measurement]
-
         new_id = 1
         display_id = 2
         export_id = 3
@@ -42,20 +41,14 @@ class Buttons(wx.Panel):
         self.set_buttons()
 
     def set_buttons(self):
-        for i in range(len(self.BUTTON_LABELS)):
-            b = wx.Button(self, wx.ID_ANY, self.BUTTON_LABELS[i], pos=(10 + 220 * i, 10))
+        for i in range(len(self.button_labels)):
+            b = wx.Button(self, wx.ID_ANY, self.button_labels[i], pos=(10 + 220 * i, 10))
             b.SetFont(self.font)
             b.SetSize(self.calc_size(b))
-            b.Bind(wx.EVT_BUTTON, self.func[i])
+            b.Bind(wx.EVT_BUTTON, self.functions[i])
             b.Hide()
 
             self.all_buttons.append(b)
-
-    def get_element_by_id(self, element_id):
-        for e in self.GetChildren():
-            if e.Id == element_id:
-                return e
-        return None
 
     def get_button(self, text):
         for e in self.all_buttons:
@@ -78,15 +71,10 @@ class Buttons(wx.Panel):
         w, h = element.GetTextExtent(element.GetLabel())
         return w + margin[0], h + margin[1]
 
-    @staticmethod
-    def on_key_pressed(event):
-        keycode = event.GetKeyCode()
-        print('X', keycode)
-
     def load(self, event):
-        dir = r'data'
+        directory = r'data'
         files = "Pickle (*.pickle) |*.pickle; | Všetky súbory |*"
-        with wx.FileDialog(self, "Zvoľte súbor", wildcard=files, defaultDir=dir,
+        with wx.FileDialog(self, "Zvoľte súbor", wildcard=files, defaultDir=directory,
                            style=wx.RESIZE_BORDER | wx.DD_DIR_MUST_EXIST) as dialog:
             if dialog.ShowModal() == wx.ID_CANCEL:
                 return
@@ -102,11 +90,7 @@ class Buttons(wx.Panel):
         self.handler.handle('cancel_measurement', tuple())
 
     def save(self, event):
-        # TODO inform user about result of saving data (saved/error)
-        if self.handler.handle('save', tuple()):
-            pass
-        else:
-            pass
+        self.handler.handle('save', tuple())
 
     def export(self, event):
         self.handler.handle('export', tuple())

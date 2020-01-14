@@ -59,18 +59,18 @@ class Handler:
         self.measurement_window.Show()
         self.parent_window.Close()
         self.parent_window = self.measurement_window
-        self.connection.kill = False
-        self.measurement_window.kill = False
-        self.measurement_window.thread.start()
-        try:
-            self.connection.thread.start()
-        except RuntimeError:
-            self.connection.create_thread()
-            self.connection.thread.start()
+        self.connection.table = self.measurement_window.table_panel
+        if self.connection.establish_connection():
+            try:
+                self.connection.thread.start()
+            except RuntimeError:
+                self.connection.thread = self.connection.create_thread()
+                self.connection.thread.start()
+        else:
+            self.cancel()
 
     def cancel(self):
         self.parent_window.Close()
         self.connection.kill = True
-        self.measurement_window.kill = True
         self.handle('after_window', tuple())
         print(self.data.values)
