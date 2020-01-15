@@ -12,7 +12,7 @@ class Handler:
         self.parent_window = None
         self.measurement_window = None
         self.data = None
-        self.connection = Connection(self.data)
+        self.connection = Connection(self.data, self)
         self.calls = {'new_measurement': self.new_measurement, 'cancel_measurement': self.cancel,
                       'after_window': self.after_window,
                       'new_measurement_window': self.new_measurement_window, 'save': self.save,
@@ -24,6 +24,7 @@ class Handler:
     def new_measurement_window(self):
         self.parent_window.Close()
         self.parent_window = NewMeasurement(self)
+        self.parent_window.buttons.button_handler('new_measurement')
         self.parent_window.Show()
         self.data = MeasurementData()
         self.connection.data = self.data
@@ -31,10 +32,12 @@ class Handler:
 
     def after_window(self):
         self.parent_window = AfterMeasurement(self)
+        self.parent_window.buttons.button_handler('after_measurement')
         self.parent_window.Show()
 
     def graph_window(self):
         self.parent_window = DrawGraph(self)
+        self.parent_window.buttons.button_handler('graph')
         self.parent_window.Show()
 
     def save(self):
@@ -59,6 +62,7 @@ class Handler:
         self.measurement_window.Show()
         self.parent_window.Close()
         self.parent_window = self.measurement_window
+        self.parent_window.buttons.button_handler('during_measurement')
         self.connection.table = self.measurement_window.table_panel
         if self.connection.establish_connection():
             try:

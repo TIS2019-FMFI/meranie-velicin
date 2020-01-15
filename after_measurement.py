@@ -1,5 +1,4 @@
 from wx.lib.splitter import MultiSplitterWindow
-
 import button_panel
 from table import *
 
@@ -11,15 +10,6 @@ class AfterMeasurement(wx.Frame):
 
         splitter = MultiSplitterWindow(self)
         self.buttons = button_panel.Buttons(handler, parent=splitter)
-
-        x, y = 0, 0
-        gap = 30
-
-        for b in self.buttons.get_buttons():
-            if b.GetLabel() not in ('Zastaviť meranie', 'OK'):
-                b.Show()
-                b.SetPosition((x, y))
-                x += b.GetTextExtent(b.GetLabel()).GetWidth() + gap
 
         splitter.AppendWindow(self.buttons)
         grid = Table(splitter, self.buttons)

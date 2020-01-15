@@ -8,7 +8,8 @@ from data_parser import Parser
 
 class Connection:
 
-    def __init__(self, data):
+    def __init__(self, data, handler):
+        self.handler = handler
         self.data = data
         self.parser = Parser()
         self.scheduler = sched.scheduler(time.time, time.sleep)
@@ -31,6 +32,7 @@ class Connection:
                     self.port = serial.Serial(device.device, 2400, timeout=None, parity=serial.PARITY_NONE, rtscts=1)
                     return True
                 except serial.serialutil.SerialException:
+                    self.handler.handle('cancel_measurement', tuple())
                     return False
         return False
 
