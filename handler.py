@@ -12,7 +12,7 @@ class Handler:
         self.parent_window = None
         self.measurement_window = None
         self.data = None
-        self.connection = Connection(self.data)
+        self.connection = Connection(self.data, self)
         self.calls = {'new_measurement': self.new_measurement, 'cancel_measurement': self.cancel,
                       'after_window': self.after_window,
                       'new_measurement_window': self.new_measurement_window, 'save': self.save,
