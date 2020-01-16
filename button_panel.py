@@ -90,9 +90,13 @@ class Buttons(wx.Panel):
         self.handler.handle('cancel_measurement', tuple())
 
     def save(self, event):
-        with wx.FileDialog(self.GetParent(),"save as","","",
-			   wildcard="Excel files (*.xlsx) | "+ \
-			   "*.xlsx |Any (*.*) | ",
+        file = parent.get_file_name() #rodic musi byt zrejme NewMeasurment
+        #alebo nieco, z kade sa da vytiahnut subor -> NewMeasurment.get_file_name
+        
+        with wx.FileDialog(self.GetParent(),"Uložiť ako","","",
+			   wildcard="Pickle files (*.picke) | "+ \
+			   "*.pickle |Any (*.*) | (*.*)",
+                           defaultFile=file,
 			   style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)\
 			   as dialog:
             dialog.ShowModal()
