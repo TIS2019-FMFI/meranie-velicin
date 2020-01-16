@@ -54,8 +54,7 @@ ref_class je referencia na typ objektu"""
 
 class NewMeasurement:
     def __init__(self, handler, parent):
-        self.buttons = button_panel.Buttons(handler, parent)
-        self.buttons.button_handler('new_measurement')
+        self.buttons = button_panel.Buttons(handler, parent.splitter)
         panel_window = PanelWindow(parent.splitter, self.buttons)
         parent.panelSwitcher.replace(1, parent.p1, self.buttons)
         parent.panelSwitcher.replace(2, parent.p2, panel_window)
