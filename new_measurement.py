@@ -60,10 +60,6 @@ class NewMeasurement(wx.Frame):
 
         self.buttons = button_panel.Buttons(handler, splitter)
 
-        self.buttons.show_button('OK')
-        b = self.buttons.get_button('OK')
-        b.SetPosition((600, 400))
-
         panel_window = PanelWindow(splitter, self.buttons)
 
         splitter.AppendWindow(panel_window)

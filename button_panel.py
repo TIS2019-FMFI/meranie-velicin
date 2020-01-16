@@ -13,7 +13,7 @@ class Buttons(wx.Panel):
         self.button_labels = ['Zastaviť meranie', 'Nové meranie', 'Zobraziť graf', 'Export do Excelu',
                               'Uložiť meranie', 'Načítať meranie', 'OK']
         self.functions = [self.stop_click, self.new_measurement, self.display_graph, self.export, self.save, self.load,
-                     self.start_measurement]
+                          self.start_measurement]
         new_id = 1
         display_id = 2
         export_id = 3
@@ -78,7 +78,7 @@ class Buttons(wx.Panel):
                            style=wx.RESIZE_BORDER | wx.DD_DIR_MUST_EXIST) as dialog:
             if dialog.ShowModal() == wx.ID_CANCEL:
                 return
-            self.handler.handle('load', (dialog.GetPath(), ))
+            self.handler.handle('load', (dialog.GetPath(),))
 
     def new_measurement(self, event):
         self.handler.handle('new_measurement_window', tuple())
@@ -97,3 +97,52 @@ class Buttons(wx.Panel):
 
     def display_graph(self, event):
         self.handler.handle('show_graph', tuple())
+
+    def button_handler(self, window):
+        methods = {'new_measurement': self.new_measurement_buttons, 'start': self.start_buttons,
+                   'during_measurement': self.during_measurement_buttons, 'graph': self.graph_buttons,
+                   'after_measurement': self.after_measurement_buttons}
+        self.hide_all()
+        methods[window]()
+
+    def hide_all(self):
+        for button in self.all_buttons:
+            button.Hide()
+
+    def new_measurement_buttons(self):
+        button = self.get_button('OK')
+        button.SetPosition((600, 400))
+        button.Show()
+
+    def start_buttons(self):
+        load_button = self.get_button('Načítať meranie')
+        load_button.SetPosition((550, 300))
+
+        new_measurement_button = self.get_button('Nové meranie')
+        new_measurement_button.SetPosition((250, 300))
+
+        new_measurement_button.Show()
+        load_button.Show()
+
+    def during_measurement_buttons(self):
+        stop_button = self.get_button('Zastaviť meranie')
+        stop_button.Show()
+
+    def graph_buttons(self):
+        x, y = 0, 0
+        gap = 30
+        for b in self.get_buttons():
+            if b.GetLabel() not in ('Zastaviť meranie', 'Zobraziť graf', 'OK'):
+                b.Show()
+                b.SetPosition((x, y))
+                x += b.GetTextExtent(b.GetLabel()).GetWidth() + gap
+
+    def after_measurement_buttons(self):
+        x, y = 0, 0
+        gap = 30
+
+        for b in self.get_buttons():
+            if b.GetLabel() not in ('Zastaviť meranie', 'OK'):
+                b.Show()
+                b.SetPosition((x, y))
+                x += b.GetTextExtent(b.GetLabel()).GetWidth() + gap

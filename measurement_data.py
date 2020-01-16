@@ -24,7 +24,10 @@ class MeasurementData:
         print('exporting')
         workbook = xlsxwriter.Workbook(self.file_name + '.xlsx')
         worksheet = workbook.add_worksheet()
-        col = 0
+
+        worksheet.write(0, 0, 'Čas')
+        worksheet.write(1, 0, 'Hodnota')
+        col = 1
         for value in self.values:
             worksheet.write(0, col, value[0])
             worksheet.write(1, col, value[1][0])
@@ -42,7 +45,7 @@ class MeasurementData:
         return True
 
     def get_end_column(self):
-        length = len(self.values) - 1
+        length = len(self.values)
         res = ''
         while length >= 0:
             letter = length % 26

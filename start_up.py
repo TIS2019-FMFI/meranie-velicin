@@ -13,14 +13,7 @@ class Start(wx.Frame):
         self.handler.parent_window = self
         self.buttons = button_panel.Buttons(self.handler, parent=self)
 
-        for i in self.buttons.get_buttons():
-            if isinstance(i, wx._core.Button):
-                if i.GetLabel() == 'Nové meranie':
-                    i.SetPosition((250, 300))
-                    i.Show()
-                elif i.GetLabel() == 'Načítať meranie':
-                    i.SetPosition((550, 300))
-                    i.Show()
+        self.buttons.button_handler('start')
 
 
 if __name__ == "__main__":
