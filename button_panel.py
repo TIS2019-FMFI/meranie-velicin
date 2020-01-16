@@ -90,7 +90,17 @@ class Buttons(wx.Panel):
         self.handler.handle('cancel_measurement', tuple())
 
     def save(self, event):
-        self.handler.handle('save', tuple())
+        with wx.FileDialog(self.GetParent(),"save as","","",
+			   wildcard="Excel files (*.xlsx) | "+ \
+			   "*.xlsx |Any (*.*) | ",
+			   style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)\
+			   as dialog:
+            dialog.ShowModal()
+            path = dialog.GetPath()
+            print(path)
+	    #zrejme treba poslat cestu handleru
+	    #kam a s akym nazvom ma ulozit subor	
+        self.handler.handle('save', (path,))
 
     def export(self, event):
         self.handler.handle('export', tuple())
