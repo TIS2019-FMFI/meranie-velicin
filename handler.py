@@ -22,10 +22,8 @@ class Handler:
         return self.calls[key](*param)
 
     def new_measurement_window(self):
-        self.parent_window.Close()
-        self.parent_window = NewMeasurement(self)
+        self.parent_window = NewMeasurement(self, self.parent_window)
         self.parent_window.buttons.button_handler('new_measurement')
-        self.parent_window.Show()
         self.data = MeasurementData()
         self.connection.data = self.data
         self.data.file_name = self.parent_window.get_file_name()

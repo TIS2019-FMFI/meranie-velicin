@@ -52,18 +52,14 @@ ref_class je referencia na typ objektu"""
         elem.SetFont(self.button_panel.font)
 
 
-class NewMeasurement(wx.Frame):
+class NewMeasurement:
+    def __init__(self, handler, parent):
+        self.buttons = button_panel.Buttons(handler, parent)
+        self.buttons.button_handler('new_measurement')
+        panel_window = PanelWindow(parent.splitter, self.buttons)
+        parent.panelSwitcher.replace(1, parent.p1, self.buttons)
+        parent.panelSwitcher.replace(2, parent.p2, panel_window)
 
-    def __init__(self, handler, parent=None):
-        wx.Frame.__init__(self, parent=parent, title='Nové meranie', size=(1080, 720), pos=(243, 56))
-        splitter = MultiSplitterWindow(self)
-
-        self.buttons = button_panel.Buttons(handler, splitter)
-
-        panel_window = PanelWindow(splitter, self.buttons)
-
-        splitter.AppendWindow(panel_window)
-        splitter.AppendWindow(self.buttons)
 
     def get_file_name(self):
         return 'file_test'
