@@ -3,6 +3,8 @@ from wx import *
 from gtts import gTTS
 from io import BytesIO
 import pygame
+from wx.lib.splitter import MultiSplitterWindow
+import time
 
 
 class Table(wx.Panel):
@@ -73,6 +75,8 @@ class Table(wx.Panel):
                                        wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
             self.grid.SetCellValue(0, self.pointer, str(time))
             self.grid.SetCellValue(1, self.pointer, str(value))
+            #self.grid.MakeCellVisible(self.pointer, 0)
+            self.grid.MoveCursorRight(False)    #True/False - ci po jednom okne alebo skupina okien
         except RuntimeError:
             return
 
@@ -90,10 +94,41 @@ class Table(wx.Panel):
         row = event.GetRow()
         col = event.GetCol()
 
-        tts = gTTS(text=str(self.grid.GetCellValue(row, col)), lang='sk')
+        if self.grid.GetCellValue(row, col) == "":
+            return
+        self.speak(self.grid.GetCellValue(row, col))
+
+    def speak(self, value):
+        tts = gTTS(text=str(value), lang='sk')
         fp = BytesIO()
         tts.write_to_fp(fp)
         fp.seek(0)
         pygame.mixer.init()
         pygame.mixer.music.load(fp)
         pygame.mixer.music.play()
+
+#Test for scrolling table
+# class Draw(wx.Frame):
+#
+#     def __init__(self):
+#         wx.Frame.__init__(self, parent=None, title='Po Merani', size=(1080, 720), pos=(243, 56))
+#
+#         splitter = MultiSplitterWindow(self)
+#         self.grid = Table(splitter, None)
+#         splitter.AppendWindow(self.grid, self.grid.get_height() + 20)
+#         splitter.SetOrientation(wx.VERTICAL)
+#
+#     def add(self, a, b):
+#         self.grid.add(a, b)
+#
+# if __name__ == "__main__":
+#     app = wx.App(0)
+#     x = Draw()
+#     x.Show()
+#     #app.MainLoop()
+#
+#     for i in range(20):
+#         x.add(3*i, 60)
+#         time.sleep(0.5)
+#
+#     app.MainLoop()
