@@ -12,7 +12,6 @@ class Table(wx.Panel):
     def __init__(self, parent, buttons):
         wx.Panel.__init__(self, parent=parent)
 
-        self.read = False
         pygame.init()
 
         self.upper_panel = parent
@@ -81,11 +80,8 @@ class Table(wx.Panel):
                                        wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
             self.grid.SetCellValue(0, self.pointer, str(time))
             self.grid.SetCellValue(1, self.pointer, str(value))
-            #self.grid.MakeCellVisible(self.pointer, 0)
-            print(self.grid.GetGridCursorCol(), self.grid.GetGridCursorRow())
             self.grid.MoveCursorDown(False)
             self.grid.MoveCursorRight(False)    #True/False - ci po jednom okne alebo skupina okien
-            print(self.grid.GetGridCursorCol(), self.grid.GetGridCursorRow())
         except RuntimeError:
             return
 
@@ -100,9 +96,6 @@ class Table(wx.Panel):
         return self.values
 
     def get_text(self, event):
-        if not self.read:
-            self.read = True
-            return
         row = event.GetRow()
         col = event.GetCol()
 
@@ -125,28 +118,3 @@ class Table(wx.Panel):
             return
         self.speak(self.last)
 
-#Test for scrolling table
-# class Draw(wx.Frame):
-#
-#     def __init__(self):
-#         wx.Frame.__init__(self, parent=None, title='Po Merani', size=(1080, 720), pos=(243, 56))
-#
-#         splitter = MultiSplitterWindow(self)
-#         self.grid = Table(splitter, None)
-#         splitter.AppendWindow(self.grid, self.grid.get_height() + 20)
-#         splitter.SetOrientation(wx.VERTICAL)
-#
-#     def add(self, a, b):
-#         self.grid.add(a, b)
-#
-# if __name__ == "__main__":
-#     app = wx.App(0)
-#     x = Draw()
-#     x.Show()
-#     #app.MainLoop()
-#
-#     for i in range(2):
-#         x.add(3*i, 60)
-#         time.sleep(1)
-#
-#     app.MainLoop()
