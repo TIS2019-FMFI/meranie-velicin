@@ -48,6 +48,9 @@ class Table(wx.Panel):
         accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('M'), random_id)])
         self.SetAcceleratorTable(accel_tbl)
 
+        self.values = []
+        self.last = None
+
     def exit(self):
         self.buttons.getButtons()[0].SetFocus()
 
@@ -64,6 +67,9 @@ class Table(wx.Panel):
             self.resize(1)
         self.pointer += 1
 
+        self.values.append((time, value))
+        self.last = value
+
         try:
             self.grid.SetReadOnly(0, self.pointer)
             self.grid.SetReadOnly(1, self.pointer)
@@ -76,7 +82,10 @@ class Table(wx.Panel):
             self.grid.SetCellValue(0, self.pointer, str(time))
             self.grid.SetCellValue(1, self.pointer, str(value))
             #self.grid.MakeCellVisible(self.pointer, 0)
+            print(self.grid.GetGridCursorCol(), self.grid.GetGridCursorRow())
+            self.grid.MoveCursorDown(False)
             self.grid.MoveCursorRight(False)    #True/False - ci po jednom okne alebo skupina okien
+            print(self.grid.GetGridCursorCol(), self.grid.GetGridCursorRow())
         except RuntimeError:
             return
 
@@ -86,6 +95,9 @@ class Table(wx.Panel):
     # TODO returns a constant
     def get_height(self):
         return self.rows * 75
+
+    def get_values(self):
+        return self.values
 
     def get_text(self, event):
         if not self.read:
@@ -107,6 +119,12 @@ class Table(wx.Panel):
         pygame.mixer.music.load(fp)
         pygame.mixer.music.play()
 
+    def read_last(self, event):
+        # TODO bind it with CTRL+R
+        if self.last is None:
+            return
+        self.speak(self.last)
+
 #Test for scrolling table
 # class Draw(wx.Frame):
 #
@@ -127,8 +145,8 @@ class Table(wx.Panel):
 #     x.Show()
 #     #app.MainLoop()
 #
-#     for i in range(20):
+#     for i in range(2):
 #         x.add(3*i, 60)
-#         time.sleep(0.5)
+#         time.sleep(1)
 #
 #     app.MainLoop()
