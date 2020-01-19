@@ -5,6 +5,7 @@ from matplotlib.figure import Figure
 from wx.lib.splitter import MultiSplitterWindow
 import button_panel
 from table import *
+from measurement_data import *
 
 
 class MyGraph(wx.Panel):
@@ -20,12 +21,13 @@ class MyGraph(wx.Panel):
         self.axes.set_xlabel("ČAS")
         self.axes.set_ylabel("HODNOTA")
 
-    def draw(self, table):
+    def draw(self, values):
+        # tuple in form: (time, (value, unit))
         x = []
         y = []
-        for i in table:
+        for i in values:
             x.append(i[0])
-            y.append(i[1])
+            y.append(i[1][0])
         self.axes.plot(x, y)
 
     # TODO parameter names shadowing built-ins
@@ -48,6 +50,6 @@ class DrawGraph(wx.Frame):
 
         graph = MyGraph(splitter)
         splitter.AppendWindow(graph)
-        graph.draw(grid.get_values())
+        graph.draw(MeasurementData.values)
 
         splitter.SetOrientation(wx.VERTICAL)

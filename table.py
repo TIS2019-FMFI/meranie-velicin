@@ -47,7 +47,6 @@ class Table(wx.Panel):
         accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('M'), random_id)])
         self.SetAcceleratorTable(accel_tbl)
 
-        self.values = []
         self.last = None
 
     def exit(self):
@@ -66,7 +65,6 @@ class Table(wx.Panel):
             self.resize(1)
         self.pointer += 1
 
-        self.values.append((time, value))
         self.last = value
 
         try:
@@ -91,9 +89,6 @@ class Table(wx.Panel):
     # TODO returns a constant
     def get_height(self):
         return self.rows * 75
-
-    def get_values(self):
-        return self.values
 
     def get_text(self, event):
         row = event.GetRow()
