@@ -3,6 +3,8 @@ from wx import *
 from gtts import gTTS
 from io import BytesIO
 import pygame
+from wx.lib.splitter import MultiSplitterWindow
+import time
 
 
 class Table(wx.Panel):
@@ -10,7 +12,6 @@ class Table(wx.Panel):
     def __init__(self, parent, buttons):
         wx.Panel.__init__(self, parent=parent)
 
-        self.read = False
         pygame.init()
 
         self.upper_panel = parent
@@ -46,6 +47,8 @@ class Table(wx.Panel):
         accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('M'), random_id)])
         self.SetAcceleratorTable(accel_tbl)
 
+        self.last = None
+
     def exit(self):
         self.buttons.getButtons()[0].SetFocus()
 
@@ -62,6 +65,8 @@ class Table(wx.Panel):
             self.resize(1)
         self.pointer += 1
 
+        self.last = value
+
         try:
             self.grid.SetReadOnly(0, self.pointer)
             self.grid.SetReadOnly(1, self.pointer)
@@ -73,6 +78,8 @@ class Table(wx.Panel):
                                        wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
             self.grid.SetCellValue(0, self.pointer, str(time))
             self.grid.SetCellValue(1, self.pointer, str(value))
+            self.grid.MoveCursorDown(False)
+            self.grid.MoveCursorRight(False)    #True/False - ci po jednom okne alebo skupina okien
         except RuntimeError:
             return
 
@@ -84,16 +91,25 @@ class Table(wx.Panel):
         return self.rows * 75
 
     def get_text(self, event):
-        if not self.read:
-            self.read = True
-            return
         row = event.GetRow()
         col = event.GetCol()
 
-        tts = gTTS(text=str(self.grid.GetCellValue(row, col)), lang='sk')
+        if self.grid.GetCellValue(row, col) == "":
+            return
+        self.speak(self.grid.GetCellValue(row, col))
+
+    def speak(self, value):
+        tts = gTTS(text=str(value), lang='sk')
         fp = BytesIO()
         tts.write_to_fp(fp)
         fp.seek(0)
         pygame.mixer.init()
         pygame.mixer.music.load(fp)
         pygame.mixer.music.play()
+
+    def read_last(self, event):
+        # TODO bind it with CTRL+R
+        if self.last is None:
+            return
+        self.speak(self.last)
+

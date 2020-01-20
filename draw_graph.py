@@ -20,12 +20,13 @@ class MyGraph(wx.Panel):
         self.axes.set_xlabel("ČAS")
         self.axes.set_ylabel("HODNOTA")
 
-    def draw(self):
+    def draw(self, values):
+        # tuple in form: (time, (value, unit))
         x = []
         y = []
-        for i in range(20):
-            x.append(i * 4)
-            y.append(random.randrange(10, 40))
+        for i in values:
+            x.append(i[0])
+            y.append(i[1][0])
         self.axes.plot(x, y)
 
     # TODO parameter names shadowing built-ins
@@ -48,6 +49,6 @@ class DrawGraph(wx.Frame):
 
         graph = MyGraph(splitter)
         splitter.AppendWindow(graph)
-        graph.draw()
+        graph.draw(handler.data)
 
         splitter.SetOrientation(wx.VERTICAL)
