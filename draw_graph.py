@@ -5,7 +5,6 @@ from matplotlib.figure import Figure
 from wx.lib.splitter import MultiSplitterWindow
 import button_panel
 from table import *
-from measurement_data import *
 
 
 class MyGraph(wx.Panel):
@@ -50,6 +49,6 @@ class DrawGraph(wx.Frame):
 
         graph = MyGraph(splitter)
         splitter.AppendWindow(graph)
-        graph.draw(MeasurementData.values)
+        graph.draw(handler.data)
 
         splitter.SetOrientation(wx.VERTICAL)
