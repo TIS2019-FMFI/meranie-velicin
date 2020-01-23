@@ -20,7 +20,6 @@ class PanelHandler:
     def add(self, panel, sash_pos=-1):
         self.windows.append(panel)
         self.splitter.AppendWindow(panel, sash_pos)
-        print(panel.GetPosition())
 
 
 class Start(wx.Frame):
