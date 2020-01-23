@@ -1,39 +1,38 @@
 import button_panel
-from wx.lib.splitter import MultiSplitterWindow
 import wx
 
 
 class PanelWindow(wx.Panel):
 
     def __init__(self, parent, button_panel):
-        wx.Panel.__init__(self, parent=parent)
+        # super(PanelWindow, self).__init__(parent)
+        wx.Panel.__init__(self, parent=parent, pos=wx.DefaultPosition, size=wx.Size(1080, 360))
         self.button_panel = button_panel
         self.parent = parent
         self._all_elements = []
+        self.box = wx.BoxSizer(wx.VERTICAL)
 
         # prida lable a textare-y
         labels = ["názov: ", "interval: "]
         pos_text = [250, 200]
+        pos_area = [400, 200]
 
         for t in labels:
-            self.add_element(wx.StaticText, pos=pos_text, text=t)
+            s1 = wx.StaticText(parent=self, id=wx.ID_ANY, label=t, pos=pos_text)
+            s1.SetFont(button_panel.font)
 
-            # vypocitaj poziciu
-            # x = sirka elementu + x
-            # y je rovnake
-            pos = [(button_panel.calc_size(self._all_elements[-1])[0] +
-                    pos_text[0]), pos_text[1]]
+            t1 = wx.TextCtrl(parent=self, id=wx.ID_ANY, value="", pos=pos_area,
+                             size=wx.Size(250, 35))
+            t1.SetFont(button_panel.font)
 
-            # posun y
-            pos_text[1] += button_panel.calc_size(self._all_elements[-1])[1]
+            self._all_elements.append(s1)
+            self._all_elements.append(t1)
 
-            # pridaj textarea
-            self.add_element(wx.TextCtrl, pos=pos)
+            pos_text[1] += 100
+            pos_area[1] += 100
 
-            # nastav rozmer textfieldu
-            last = self._all_elements[-1]
-            if type(last) == wx._core.TextCtrl:
-                last.SetSize(250, self._all_elements[-2].GetSize()[1])
+            self.box.Add(s1)
+            self.box.Add(t1)
 
         for e in self._all_elements:
             if type(e) == wx._core.TextCtrl:
@@ -52,18 +51,15 @@ ref_class je referencia na typ objektu"""
         elem.SetFont(self.button_panel.font)
 
 
-class NewMeasurement(wx.Frame):
+class NewMeasurement:
 
-    def __init__(self, handler, parent=None):
-        wx.Frame.__init__(self, parent=parent, title='Nové meranie', size=(1080, 720), pos=(243, 56))
-        splitter = MultiSplitterWindow(self)
-
-        self.buttons = button_panel.Buttons(handler, splitter)
-
-        panel_window = PanelWindow(splitter, self.buttons)
-
-        splitter.AppendWindow(panel_window)
-        splitter.AppendWindow(self.buttons)
+    def __init__(self, handler, parent):
+        self.parent = parent
+        self.buttons = button_panel.Buttons(handler, parent.splitter)
+        panel_window = PanelWindow(parent.splitter, self.buttons)
+        parent.panelHandler.clear()
+        parent.panelHandler.add(panel_window, 360)
+        parent.panelHandler.add(self.buttons)
 
     def get_file_name(self):
         return 'file_test'

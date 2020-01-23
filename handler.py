@@ -22,23 +22,19 @@ class Handler:
         return self.calls[key](*param)
 
     def new_measurement_window(self):
-        self.parent_window.Close()
-        self.parent_window = NewMeasurement(self)
-        self.parent_window.buttons.button_handler('new_measurement')
-        self.parent_window.Show()
+        new_measurement_window = NewMeasurement(self, self.parent_window)
+        new_measurement_window.buttons.button_handler('new_measurement')
         self.data = MeasurementData()
         self.connection.data = self.data
-        self.data.file_name = self.parent_window.get_file_name()
+        self.data.file_name = new_measurement_window.get_file_name()
 
     def after_window(self):
-        self.parent_window = AfterMeasurement(self)
-        self.parent_window.buttons.button_handler('after_measurement')
-        self.parent_window.Show()
+        after_measurement = AfterMeasurement(self, self.parent_window)
+        after_measurement.buttons.button_handler('after_measurement')
 
     def graph_window(self):
-        self.parent_window = DrawGraph(self)
-        self.parent_window.buttons.button_handler('graph')
-        self.parent_window.Show()
+        draw_graph = DrawGraph(self, self.parent_window)
+        draw_graph.buttons.button_handler('graph')
 
     def save(self):
         if self.data.pickle():
@@ -58,12 +54,9 @@ class Handler:
             pass
 
     def new_measurement(self):
-        self.measurement_window = Measurement(self, self.data)
-        self.measurement_window.Show()
-        self.parent_window.Close()
-        self.parent_window = self.measurement_window
-        self.parent_window.buttons.button_handler('during_measurement')
-        self.connection.table = self.measurement_window.table_panel
+        measurement_window = Measurement(self, self.parent_window, self.data)
+        measurement_window.buttons.button_handler('during_measurement')
+        self.connection.table = measurement_window.table_panel
         if self.connection.establish_connection():
             try:
                 self.connection.thread.start()
@@ -74,7 +67,6 @@ class Handler:
             self.cancel()
 
     def cancel(self):
-        self.parent_window.Close()
         self.connection.kill = True
         self.handle('after_window', tuple())
         print(self.data.values)

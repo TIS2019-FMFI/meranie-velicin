@@ -35,20 +35,15 @@ class MyGraph(wx.Panel):
         self.canvas.draw()
 
 
-class DrawGraph(wx.Frame):
+class DrawGraph:
 
-    def __init__(self, handler):
-        wx.Frame.__init__(self, parent=None, title='Po Merani', size=(1080, 720), pos=(243, 56))
-
-        splitter = MultiSplitterWindow(self)
-        self.buttons = button_panel.Buttons(handler, parent=splitter)
-
-        splitter.AppendWindow(self.buttons)
-        grid = Table(splitter, self.buttons)
-        splitter.AppendWindow(grid, grid.get_height() + 20)
-
-        graph = MyGraph(splitter)
-        splitter.AppendWindow(graph)
-        graph.draw(handler.data)
-
-        splitter.SetOrientation(wx.VERTICAL)
+    def __init__(self, handler, parent):
+        parent.panelHandler.clear()
+        self.parent = parent
+        self.buttons = button_panel.Buttons(handler, parent.splitter)
+        self.grid = Table(parent.splitter, self.buttons)
+        self.graph = MyGraph(parent.splitter)
+        parent.panelHandler.add(self.buttons)
+        parent.panelHandler.add(self.grid, self.grid.get_height() + 20)
+        parent.panelHandler.add(self.graph)
+        self.graph.draw()

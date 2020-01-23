@@ -1,21 +1,17 @@
-from wx.lib.splitter import MultiSplitterWindow
 import button_panel
 from table import *
 
 
-class Measurement(wx.Frame):
+class Measurement:
 
-    def __init__(self, handler, measurement_data):
-        wx.Frame.__init__(self, parent=None, title="Meranie", size=(1080, 720), pos=(243, 56))
+    def __init__(self, handler, parent, measurement_data):
+        self.parent = parent
         self.kill = False
         self.handler = handler
         self.measurement_data = measurement_data
 
-        splitter = MultiSplitterWindow(self)
-        self.buttons = button_panel.Buttons(handler, splitter)
-
-        splitter.AppendWindow(self.buttons)
-
-        self.table_panel = Table(splitter, self.buttons)
-        splitter.AppendWindow(self.table_panel, self.table_panel.get_height() + 20)
-        splitter.SetOrientation(wx.VERTICAL)
+        self.buttons = button_panel.Buttons(handler, parent.splitter)
+        self.table_panel = Table(parent.splitter, self.buttons)
+        parent.panelHandler.clear()
+        parent.panelHandler.add(self.buttons, 100)
+        parent.panelHandler.add(self.table_panel)

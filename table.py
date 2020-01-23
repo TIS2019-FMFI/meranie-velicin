@@ -3,8 +3,6 @@ from wx import *
 from gtts import gTTS
 from io import BytesIO
 import pygame
-from wx.lib.splitter import MultiSplitterWindow
-import time
 
 
 class Table(wx.Panel):
@@ -79,7 +77,7 @@ class Table(wx.Panel):
             self.grid.SetCellValue(0, self.pointer, str(time))
             self.grid.SetCellValue(1, self.pointer, str(value))
             self.grid.MoveCursorDown(False)
-            self.grid.MoveCursorRight(False)    #True/False - ci po jednom okne alebo skupina okien
+            self.grid.MoveCursorRight(False)    # True/False - ci po jednom okne alebo skupina okien
         except RuntimeError:
             return
 
