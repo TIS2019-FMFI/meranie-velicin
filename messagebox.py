@@ -1,6 +1,7 @@
 import wx
 
-class AlertBox():
-    
+
+class AlertBox:
+
     def show(self, text):
-         wx.MessageBox(text, 'Upozornenie', wx.OK | wx.ICON_WARNING)
+        wx.MessageBox(text, 'Upozornenie', wx.OK | wx.ICON_WARNING)

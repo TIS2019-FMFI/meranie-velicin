@@ -110,4 +110,3 @@ class Table(wx.Panel):
         if self.last is None:
             return
         self.speak(self.last)
-

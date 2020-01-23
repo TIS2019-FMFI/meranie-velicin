@@ -1,30 +1,12 @@
 import button_panel
 import wx
 from wx.lib.splitter import MultiSplitterWindow
-
-from handler import Handler
-
-
-class PanelHandler:
-    def __init__(self, frame, splitter):
-        self.frame = frame
-        self.splitter = splitter
-        self.windows = []
-
-    def clear(self):
-        for w in self.windows:
-            self.splitter.DetachWindow(w)
-            w.Destroy()
-        self.windows.clear()
-
-    def add(self, panel, sash_pos=-1):
-        self.windows.append(panel)
-        self.splitter.AppendWindow(panel, sash_pos)
+from panel_handler import PanelHandler
 
 
 class Start(wx.Frame):
 
-    def __init__(self):
+    def __init__(self, handler):
         wx.Frame.__init__(self, parent=None, title='Multimeter', size=(1080, 720), pos=(243, 56))
         self.splitter = MultiSplitterWindow(self)
 
@@ -33,18 +15,10 @@ class Start(wx.Frame):
         self.SetSizer(main_sizer)
         self.splitter.SetOrientation(wx.VERTICAL)
 
-        self.handler = Handler()
-        self.handler.parent_window = self
+        self.handler = handler
+        self.handler.window = self
         self.buttons = button_panel.Buttons(self.handler, self.splitter)
 
-        self.panelHandler = PanelHandler(self, self.splitter)
-        self.panelHandler.add(self.buttons)
-
-        self.buttons.button_handler('start')
-
-
-if __name__ == "__main__":
-    app = wx.App()
-    start = Start()
-    start.Show()
-    app.MainLoop()
+        self.table_panel = None
+        self.panel_handler = PanelHandler(self, self.splitter)
+        self.panel_handler.handle('start')

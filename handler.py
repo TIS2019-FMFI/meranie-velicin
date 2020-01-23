@@ -1,17 +1,16 @@
+import wx
+
 from connection import Connection
 from measurement_data import *
-from measurement import Measurement
-from after_measurement import AfterMeasurement
-from new_measurement import NewMeasurement
-from draw_graph import DrawGraph
+from start_up import Start
 
 
 class Handler:
 
     def __init__(self):
-        self.parent_window = None
+        self.window = None
         self.measurement_window = None
-        self.data = None
+        self.data = MeasurementData()
         self.connection = Connection(self.data, self)
         self.calls = {'new_measurement': self.new_measurement, 'cancel_measurement': self.cancel,
                       'after_window': self.after_window,
@@ -22,19 +21,13 @@ class Handler:
         return self.calls[key](*param)
 
     def new_measurement_window(self):
-        new_measurement_window = NewMeasurement(self, self.parent_window)
-        new_measurement_window.buttons.button_handler('new_measurement')
-        self.data = MeasurementData()
-        self.connection.data = self.data
-        self.data.file_name = new_measurement_window.get_file_name()
+        self.window.panel_handler.handle('new_measurement')
 
     def after_window(self):
-        after_measurement = AfterMeasurement(self, self.parent_window)
-        after_measurement.buttons.button_handler('after_measurement')
+        self.window.panel_handler.handle('after')
 
     def graph_window(self):
-        draw_graph = DrawGraph(self, self.parent_window)
-        draw_graph.buttons.button_handler('graph')
+        self.window.panel_handler.handle('graph')
 
     def save(self):
         if self.data.pickle():
@@ -54,15 +47,13 @@ class Handler:
             pass
 
     def new_measurement(self):
-        measurement_window = Measurement(self, self.parent_window, self.data)
-        measurement_window.buttons.button_handler('during_measurement')
-        self.connection.table = measurement_window.table_panel
+        self.window.panel_handler.handle('measurement')
+        self.data = MeasurementData()
+        self.connection.data = self.data
+        self.connection.table = self.window.table_panel
         if self.connection.establish_connection():
-            try:
-                self.connection.thread.start()
-            except RuntimeError:
-                self.connection.thread = self.connection.create_thread()
-                self.connection.thread.start()
+            self.connection.thread = self.connection.create_thread()
+            self.connection.thread.start()
         else:
             self.cancel()
 
@@ -70,3 +61,10 @@ class Handler:
         self.connection.kill = True
         self.handle('after_window', tuple())
         print(self.data.values)
+
+
+if __name__ == "__main__":
+    app = wx.App()
+    start = Start(Handler())
+    start.Show()
+    app.MainLoop()

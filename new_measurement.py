@@ -1,4 +1,3 @@
-import button_panel
 import wx
 
 
@@ -49,17 +48,3 @@ ref_class je referencia na typ objektu"""
 
         self._all_elements.append(elem)
         elem.SetFont(self.button_panel.font)
-
-
-class NewMeasurement:
-
-    def __init__(self, handler, parent):
-        self.parent = parent
-        self.buttons = button_panel.Buttons(handler, parent.splitter)
-        panel_window = PanelWindow(parent.splitter, self.buttons)
-        parent.panelHandler.clear()
-        parent.panelHandler.add(panel_window, 360)
-        parent.panelHandler.add(self.buttons)
-
-    def get_file_name(self):
-        return 'file_test'

@@ -1,13 +1,9 @@
-import random
-
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
-from wx.lib.splitter import MultiSplitterWindow
-import button_panel
 from table import *
 
 
-class MyGraph(wx.Panel):
+class Graph(wx.Panel):
 
     def __init__(self, parent):
         wx.Panel.__init__(self, parent=parent)
@@ -33,17 +29,3 @@ class MyGraph(wx.Panel):
     def change_axes(self, min, max):
         self.axes.set_ylim(float(min), float(max))
         self.canvas.draw()
-
-
-class DrawGraph:
-
-    def __init__(self, handler, parent):
-        parent.panelHandler.clear()
-        self.parent = parent
-        self.buttons = button_panel.Buttons(handler, parent.splitter)
-        self.grid = Table(parent.splitter, self.buttons)
-        self.graph = MyGraph(parent.splitter)
-        parent.panelHandler.add(self.buttons)
-        parent.panelHandler.add(self.grid, self.grid.get_height() + 20)
-        parent.panelHandler.add(self.graph)
-        self.graph.draw()
