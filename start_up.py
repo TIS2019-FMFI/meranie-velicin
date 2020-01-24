@@ -1,7 +1,9 @@
+from wx.lib.splitter import MultiSplitterWindow
+
 import button_panel
 import wx
-from panel_handler import PanelHandler
 from splitter import MultiSplitterWindow
+from panel_handler import PanelHandler
 
 
 class Start(wx.Frame):
@@ -10,6 +12,9 @@ class Start(wx.Frame):
         wx.Frame.__init__(self, parent=None, title='Multimeter', size=(1080, 720), pos=(243, 56))
         self.splitter = MultiSplitterWindow(self)
 
+        main_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        main_sizer.Add(self.splitter, 1, wx.EXPAND | wx.ALL)
+        self.SetSizer(main_sizer)
         self.splitter.SetOrientation(wx.VERTICAL)
 
         self.handler = handler
