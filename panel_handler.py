@@ -19,9 +19,9 @@ class PanelHandler:
     def new_measurement_panels(self):
         panel_window = PanelWindow(self.frame.splitter, self.frame.buttons)
         self.clear(True)
+        self.frame.buttons.button_handler('new_measurement')
         self.add(panel_window, 360)
         self.add(self.frame.buttons)
-        self.frame.buttons.button_handler('new_measurement')
 
     def start_panel(self):
         self.add(self.frame.buttons)
@@ -32,21 +32,21 @@ class PanelHandler:
         self.windows[0].Destroy()
         self.clear()
         self.add(self.frame.buttons, 100)
-        self.add(self.frame.table_panel)
+        self.add(self.frame.table_panel, 620)
         self.frame.buttons.button_handler('during_measurement')
 
     def after_panels(self):
         self.clear()
-        self.add(self.frame.buttons)
-        self.add(self.frame.table_panel)
+        self.add(self.frame.buttons, 100)
+        self.add(self.frame.table_panel, 620)
         self.frame.buttons.button_handler('after_measurement')
 
     def graph_panels(self):
         self.clear()
         graph = Graph(self.frame.splitter)
-        self.add(self.frame.buttons)
-        self.add(self.frame.table_panel, self.frame.table_panel.get_height() + 20)
-        self.add(graph)
+        self.add(self.frame.buttons, 55)
+        self.add(self.frame.table_panel, 170)
+        self.add(graph, 495)
         graph.draw(self.frame.handler.data.values)
         self.frame.buttons.button_handler('graph')
 

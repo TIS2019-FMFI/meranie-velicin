@@ -1,6 +1,8 @@
+from wx.lib.splitter import MultiSplitterWindow
+
 import button_panel
 import wx
-from wx.lib.splitter import MultiSplitterWindow
+from splitter import MultiSplitterWindow
 from panel_handler import PanelHandler
 
 

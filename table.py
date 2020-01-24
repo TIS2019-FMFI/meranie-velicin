@@ -12,9 +12,7 @@ class Table(wx.Panel):
 
         pygame.init()
 
-        self.upper_panel = parent
-
-        self.grid = wx.grid.Grid(self, -1)
+        self.grid = wx.grid.Grid(self)
         wx.Accessible(self.grid)
         self.buttons = buttons
         self.grid.SetDefaultRowSize(75)
@@ -29,7 +27,7 @@ class Table(wx.Panel):
         self.grid.Bind(wx.grid.EVT_GRID_SELECT_CELL, self.get_text)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.grid, 1, wx.EXPAND)
+        sizer.Add(self.grid, 1)
         self.SetSizer(sizer)
 
         row_labels = ['Čas', 'Hodnota']
