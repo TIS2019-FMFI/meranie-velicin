@@ -31,14 +31,14 @@ class PanelHandler:
         self.frame.table_panel = Table(self.frame.splitter, self.frame.buttons)
         self.windows[0].Destroy()
         self.clear()
-        self.add(self.frame.buttons, 100)
-        self.add(self.frame.table_panel, 620)
+        self.add(self.frame.buttons, 55)
+        self.add(self.frame.table_panel, 170)
         self.frame.buttons.button_handler('during_measurement')
 
     def after_panels(self):
         self.clear()
-        self.add(self.frame.buttons, 100)
-        self.add(self.frame.table_panel, 620)
+        self.add(self.frame.buttons, 55)
+        self.add(self.frame.table_panel, 170)
         self.frame.buttons.button_handler('after_measurement')
 
     def graph_panels(self):
@@ -46,14 +46,14 @@ class PanelHandler:
         graph = Graph(self.frame.splitter)
         self.add(self.frame.buttons, 55)
         self.add(self.frame.table_panel, 170)
-        self.add(graph, 495)
+        self.add(graph, 445)
         graph.draw(self.frame.handler.data.values)
         self.frame.buttons.button_handler('graph')
 
     def clear(self, second_measurement=False):
         for w in self.windows:
             self.splitter.DetachWindow(w)
-            if second_measurement and isinstance(w, Table):
+            if second_measurement and (isinstance(w, Table) or isinstance(w, Graph)):
                 w.Destroy()
         self.windows.clear()
 
