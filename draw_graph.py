@@ -1,13 +1,9 @@
-import random
-
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
-from wx.lib.splitter import MultiSplitterWindow
-import button_panel
 from table import *
 
 
-class MyGraph(wx.Panel):
+class Graph(wx.Panel):
 
     def __init__(self, parent):
         wx.Panel.__init__(self, parent=parent)
@@ -15,7 +11,7 @@ class MyGraph(wx.Panel):
         self.axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self, -1, self.figure)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.sizer.Add(self.canvas, 1, wx.EXPAND)
+        self.sizer.Add(self.canvas, wx.EXPAND)
         self.SetSizer(self.sizer)
         self.axes.set_xlabel("ČAS")
         self.axes.set_ylabel("HODNOTA")
@@ -33,22 +29,3 @@ class MyGraph(wx.Panel):
     def change_axes(self, min, max):
         self.axes.set_ylim(float(min), float(max))
         self.canvas.draw()
-
-
-class DrawGraph(wx.Frame):
-
-    def __init__(self, handler):
-        wx.Frame.__init__(self, parent=None, title='Po Merani', size=(1080, 720), pos=(243, 56))
-
-        splitter = MultiSplitterWindow(self)
-        self.buttons = button_panel.Buttons(handler, parent=splitter)
-
-        splitter.AppendWindow(self.buttons)
-        grid = Table(splitter, self.buttons)
-        splitter.AppendWindow(grid, grid.get_height() + 20)
-
-        graph = MyGraph(splitter)
-        splitter.AppendWindow(graph)
-        graph.draw(handler.data)
-
-        splitter.SetOrientation(wx.VERTICAL)

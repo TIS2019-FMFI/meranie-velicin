@@ -110,8 +110,9 @@ class Buttons(wx.Panel):
             button.Hide()
 
     def new_measurement_buttons(self):
+        self.hide_all()
         button = self.get_button('OK')
-        button.SetPosition((600, 400))
+        button.SetPosition((600, 100))
         button.Show()
 
     def start_buttons(self):

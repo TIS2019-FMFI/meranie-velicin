@@ -48,6 +48,7 @@ class Connection:
         except serial.serialutil.SerialException:
             self.kill = True
         if self.kill:
+            # self.handler.parent_window.cont_measurement = False
             print('kill')
             return
         self.scheduler.enter(1, 1, self.get_data)
@@ -58,7 +59,7 @@ class Connection:
             self.table.add(last_value[0], last_value[1][0])
         except ValueError:
             print('value error')
-            pass
+            # self.handler.parent_window.cont_measurement = False
 
     def create_thread(self):
         return threading.Thread(target=self.start_measurement)

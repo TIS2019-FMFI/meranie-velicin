@@ -3,8 +3,6 @@ from wx import *
 from gtts import gTTS
 from io import BytesIO
 import pygame
-from wx.lib.splitter import MultiSplitterWindow
-import time
 
 
 class Table(wx.Panel):
@@ -14,9 +12,7 @@ class Table(wx.Panel):
 
         pygame.init()
 
-        self.upper_panel = parent
-
-        self.grid = wx.grid.Grid(self, -1)
+        self.grid = wx.grid.Grid(self)
         wx.Accessible(self.grid)
         self.buttons = buttons
         self.grid.SetDefaultRowSize(75)
@@ -31,7 +27,7 @@ class Table(wx.Panel):
         self.grid.Bind(wx.grid.EVT_GRID_SELECT_CELL, self.get_text)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.grid, 1, wx.EXPAND)
+        sizer.Add(self.grid, 1)
         self.SetSizer(sizer)
 
         row_labels = ['Čas', 'Hodnota']
@@ -79,7 +75,7 @@ class Table(wx.Panel):
             self.grid.SetCellValue(0, self.pointer, str(time))
             self.grid.SetCellValue(1, self.pointer, str(value))
             self.grid.MoveCursorDown(False)
-            self.grid.MoveCursorRight(False)    #True/False - ci po jednom okne alebo skupina okien
+            self.grid.MoveCursorRight(False)    # True/False - ci po jednom okne alebo skupina okien
         except RuntimeError:
             return
 
@@ -112,4 +108,3 @@ class Table(wx.Panel):
         if self.last is None:
             return
         self.speak(self.last)
-
