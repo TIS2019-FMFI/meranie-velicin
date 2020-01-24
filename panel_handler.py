@@ -53,7 +53,7 @@ class PanelHandler:
     def clear(self, second_measurement=False):
         for w in self.windows:
             self.splitter.DetachWindow(w)
-            if second_measurement and isinstance(w, Table):
+            if second_measurement and (isinstance(w, Table) or isinstance(w, Graph)):
                 w.Destroy()
         self.windows.clear()
 
