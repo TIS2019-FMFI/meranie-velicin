@@ -55,7 +55,6 @@ class PanelHandler:
             self.splitter.DetachWindow(w)
             if second_measurement and (isinstance(w, Table) or isinstance(w, Graph)):
                 w.Destroy()
-        print(self.windows)
         self.windows.clear()
 
     def add(self, panel, sash_pos=-1):
