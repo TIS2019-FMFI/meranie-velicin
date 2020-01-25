@@ -1,15 +1,15 @@
 import wx
 
 
-class PanelWindow(wx.Panel):
+class InputPanel(wx.Panel):
 
     def __init__(self, parent, button_panel):
-        # super(PanelWindow, self).__init__(parent)
         wx.Panel.__init__(self, parent=parent, pos=wx.DefaultPosition, size=wx.Size(1080, 360))
         self.button_panel = button_panel
         self.parent = parent
         self._all_elements = []
         self.box = wx.BoxSizer(wx.VERTICAL)
+        self.txt = []
 
         # prida lable a textare-y
         labels = ["názov: ", "interval: "]
@@ -23,6 +23,7 @@ class PanelWindow(wx.Panel):
             t1 = wx.TextCtrl(parent=self, id=wx.ID_ANY, value="", pos=pos_area,
                              size=wx.Size(250, 35))
             t1.SetFont(button_panel.font)
+            self.txt.append(t1.GetValue())
 
             self._all_elements.append(s1)
             self._all_elements.append(t1)
@@ -37,6 +38,9 @@ class PanelWindow(wx.Panel):
             if type(e) == wx._core.TextCtrl:
                 e.SetFocus()
                 break
+
+    def get_txt(self):
+        return self.txt
 
     def add_element(self, ref_class, pos, text=None):
         """Prida prvok ref_class na poziciu pos s textom text.
