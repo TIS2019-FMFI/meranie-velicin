@@ -15,9 +15,9 @@ class Connection:
         self.scheduler = sched.scheduler(time.time, time.sleep)
         self.thread = self.create_thread()
         self.kill = False
-        self.port_setup_successful = None
         self.port = None
         self.table = None
+        self.interval = 1
 
     def establish_connection(self):
         if self.port is not None:
@@ -32,13 +32,13 @@ class Connection:
                     self.port = serial.Serial(device.device, 2400, timeout=None, parity=serial.PARITY_NONE, rtscts=1)
                     return True
                 except serial.serialutil.SerialException:
-                    self.handler.handle('cancel_measurement', tuple())
+                    self.handler.handle('cancel', tuple())
                     return False
         return False
 
     def start_measurement(self):
         self.kill = False
-        self.scheduler.enter(1, 1, self.get_data)
+        self.scheduler.enter(self.interval, 1, self.get_data)
         self.scheduler.run()
 
     def get_data(self):
@@ -46,20 +46,19 @@ class Connection:
         try:
             data_string = self.port.read(14)
         except serial.serialutil.SerialException:
-            self.kill = True
+            self.handler.window.cont_measurement = False
         if self.kill:
-            # self.handler.parent_window.cont_measurement = False
             print('kill')
             return
-        self.scheduler.enter(1, 1, self.get_data)
+        self.scheduler.enter(self.interval, 1, self.get_data)
         print('enter', data_string)
         try:
             self.data.insert_value(self.parser.parse(data_string))
             last_value = self.data.values[-1]
             self.table.add(last_value[0], last_value[1][0])
-        except ValueError:
-            print('value error')
-            # self.handler.parent_window.cont_measurement = False
+        except (ValueError, TypeError):
+            print('error')
+            self.handler.window.cont_measurement = False
 
     def create_thread(self):
         return threading.Thread(target=self.start_measurement)

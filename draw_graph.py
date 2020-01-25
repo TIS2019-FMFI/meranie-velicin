@@ -10,7 +10,7 @@ class Graph(wx.Panel):
         self.figure = Figure()
         self.axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self, -1, self.figure)
-        self.sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.Add(self.canvas, wx.EXPAND)
         self.SetSizer(self.sizer)
         self.axes.set_xlabel("ČAS")

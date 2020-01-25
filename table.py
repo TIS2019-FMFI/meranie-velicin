@@ -17,7 +17,7 @@ class Table(wx.Panel):
         self.buttons = buttons
         self.grid.SetDefaultRowSize(75)
         self.grid.SetDefaultColSize(75)
-        self.rows, self.columns = 2, 15
+        self.rows, self.columns = 2, 13
         self.pointer = -1
         self.grid.CreateGrid(self.rows, self.columns)
         self.grid.SetColLabelSize(0)
