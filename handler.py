@@ -1,8 +1,7 @@
 import wx
-
 from connection import Connection
 from measurement_data import *
-from start_up import Start
+from window import MainWindow
 
 
 class Handler:
@@ -12,21 +11,22 @@ class Handler:
         self.measurement_window = None
         self.data = MeasurementData()
         self.connection = Connection(self.data, self)
-        self.calls = {'new_measurement': self.new_measurement, 'cancel_measurement': self.cancel,
-                      'after_window': self.after_window,
-                      'new_measurement_window': self.new_measurement_window, 'save': self.save,
-                      'show_graph': self.graph_window, 'export': self.export, 'load': self.load}
+        self.calls = {'during': self.during, 'cancel': self.cancel, 'after': self.after, 'info': self.info,
+                      'save': self.save, 'graph': self.graph, 'export': self.export, 'load': self.load}
 
     def handle(self, key, param):
         return self.calls[key](*param)
 
-    def new_measurement_window(self):
-        self.window.panel_handler.handle('new_measurement')
+    def info(self):
+        self.window.buttons.button_handler('info')
+        self.window.panel_handler.handle('info')
 
-    def after_window(self):
+    def after(self):
+        self.window.buttons.button_handler('after')
         self.window.panel_handler.handle('after')
 
-    def graph_window(self):
+    def graph(self):
+        self.window.buttons.button_handler('graph')
         self.window.panel_handler.handle('graph')
 
     def save(self):
@@ -46,10 +46,15 @@ class Handler:
         else:
             pass
 
-    def new_measurement(self):
-        self.window.panel_handler.handle('measurement')
+    def during(self):
+        name, interval = self.window.input_panel.get_txt()
+        self.window.cont_measurement = True
+        self.window.update()
+        self.window.buttons.button_handler('during')
+        self.window.panel_handler.handle('during')
         self.data = MeasurementData()
         self.connection.data = self.data
+        self.connection.interval = 1
         self.connection.table = self.window.table_panel
         if self.connection.establish_connection():
             self.connection.thread = self.connection.create_thread()
@@ -59,12 +64,12 @@ class Handler:
 
     def cancel(self):
         self.connection.kill = True
-        self.handle('after_window', tuple())
+        self.handle('after', tuple())
         print(self.data.values)
 
 
 if __name__ == "__main__":
     app = wx.App()
-    start = Start(Handler())
-    start.Show()
+    window = MainWindow(Handler())
+    window.Show()
     app.MainLoop()
