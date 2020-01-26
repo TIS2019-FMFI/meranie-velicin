@@ -1,54 +1,58 @@
 import wx
+from messagebox import AlertBox
 
 
 class InputPanel(wx.Panel):
 
-    def __init__(self, parent, button_panel):
+    def __init__(self, parent):
         wx.Panel.__init__(self, parent=parent, pos=wx.DefaultPosition, size=wx.Size(1080, 360))
-        self.button_panel = button_panel
-        self.parent = parent
-        self._all_elements = []
+        self.font = wx.Font(20, wx.ROMAN, wx.NORMAL, wx.NORMAL)
+        self.all_elements = []
         self.box = wx.BoxSizer(wx.VERTICAL)
-        self.txt = []
 
-        # prida lable a textare-y
-        labels = ["názov: ", "interval: "]
-        pos_text = [250, 200]
-        pos_area = [400, 200]
+        self.place_elements()
 
-        for t in labels:
-            s1 = wx.StaticText(parent=self, id=wx.ID_ANY, label=t, pos=pos_text)
-            s1.SetFont(button_panel.font)
+        for element in self.all_elements:
+            self.box.Add(element)
+            element.SetFont(self.font)
+        self.all_elements[1].SetFocus()
 
-            t1 = wx.TextCtrl(parent=self, id=wx.ID_ANY, value="", pos=pos_area,
-                             size=wx.Size(250, 35))
-            t1.SetFont(button_panel.font)
-            self.txt.append(t1.GetValue())
+        self.user_input = []
+        self.alert = AlertBox()
 
-            self._all_elements.append(s1)
-            self._all_elements.append(t1)
+    def place_elements(self):
+        labels = ['názov:', 'interval:']
+        text_position = [250, 200]
+        field_position = [400, 200]
 
-            pos_text[1] += 100
-            pos_area[1] += 100
+        for label in labels:
+            text = wx.StaticText(parent=self, id=wx.ID_ANY, label=label, pos=text_position)
+            input_field = wx.TextCtrl(parent=self, id=wx.ID_ANY, value='', pos=field_position, size=(250, 35))
 
-            self.box.Add(s1)
-            self.box.Add(t1)
+            self.all_elements.append(text)
+            self.all_elements.append(input_field)
 
-        for e in self._all_elements:
-            if type(e) == wx._core.TextCtrl:
-                e.SetFocus()
-                break
+            text_position[1] += 100
+            field_position[1] += 100
 
-    def get_txt(self):
-        return self.txt
+    def correct_values(self):
+        self.user_input.clear()
+        self.user_input.append(self.all_elements[1].GetValue())
+        self.user_input.append(self.all_elements[3].GetValue().replace(',', '.'))
+        if len(self.user_input[0]) == 0:
+            self.alert.show('Názov merania nebol zadaný!')
+            self.all_elements[1].SetFocus()
+            return False
+        try:
+            float(self.user_input[1])
+            return True
+        except ValueError:
+            self.alert.show('Nesprávne zadaný interval merania!')
+            self.all_elements[3].SetFocus()
+            self.all_elements[3].Clear()
+            return False
 
-    def add_element(self, ref_class, pos, text=None):
-        """Prida prvok ref_class na poziciu pos s textom text.
-ref_class je referencia na typ objektu"""
-        if text is not None:
-            elem = ref_class(self.parent, label=text, pos=pos)
-        else:
-            elem = ref_class(self.parent, pos=pos)
-
-        self._all_elements.append(elem)
-        elem.SetFont(self.button_panel.font)
+    def clear(self):
+        self.user_input.clear()
+        self.all_elements[1].Clear()
+        self.all_elements[3].Clear()
