@@ -7,11 +7,11 @@ class MeasurementData:
 
     def __init__(self):
         self.file_name = None
-        self.period = 1
+        self.interval = 1
         self.values = []
 
     def insert_value(self, value):
-        time = (1 + len(self.values)) * self.period
+        time = (1 + len(self.values)) * self.interval
         self.values.append((time, value))
 
     def get_last_value(self):

@@ -24,6 +24,7 @@ class Connection:
             self.port.close()
         ports = serial.tools.list_ports.comports()
         if len(ports) == 0:
+            # TODO start in own thread
             os.system(r'driver\windows_10\CP210xVCPInstaller_x64.exe')
             ports = serial.tools.list_ports.comports()
         for device in ports:
@@ -44,6 +45,7 @@ class Connection:
     def get_data(self):
         data_string = None
         try:
+            self.port.reset_input_buffer()
             data_string = self.port.read(14)
         except serial.serialutil.SerialException:
             self.handler.window.cont_measurement = False

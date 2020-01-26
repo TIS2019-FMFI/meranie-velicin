@@ -63,6 +63,7 @@ class Handler:
         self.data.file_name = name
         self.connection.data = self.data
         self.connection.interval = float(interval)
+        self.data.interval = float(interval)
         if self.connection.establish_connection():
             self.buttons.button_handler('during')
             self.panel_handler.handle('during')
