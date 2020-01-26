@@ -32,7 +32,7 @@ class Connection:
                     self.port = serial.Serial(device.device, 2400, timeout=None, parity=serial.PARITY_NONE, rtscts=1)
                     return True
                 except serial.serialutil.SerialException:
-                    self.handler.handle('cancel', tuple())
+                    self.handler.handle('info', tuple())
                     return False
         return False
 
@@ -48,16 +48,13 @@ class Connection:
         except serial.serialutil.SerialException:
             self.handler.window.cont_measurement = False
         if self.kill:
-            print('kill')
             return
         self.scheduler.enter(self.interval, 1, self.get_data)
-        print('enter', data_string)
         try:
             self.data.insert_value(self.parser.parse(data_string))
             last_value = self.data.values[-1]
             self.table.add(last_value[0], last_value[1][0])
         except (ValueError, TypeError):
-            print('error')
             self.handler.window.cont_measurement = False
 
     def create_thread(self):
