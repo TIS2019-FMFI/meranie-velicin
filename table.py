@@ -56,7 +56,7 @@ class Table(wx.Panel):
         self.grid.AppendCols(num)
         self.columns += num
 
-    def add(self, time, value):
+    def add(self, time, value, load=False):
         if self.pointer + 1 == self.columns:
             self.resize(1)
         self.pointer += 1
@@ -64,27 +64,24 @@ class Table(wx.Panel):
         self.last = value
 
         try:
-            self.grid.SetReadOnly(0, self.pointer)
-            self.grid.SetReadOnly(1, self.pointer)
+            if not load and self.pointer >= 13:
+                self.scroll_table()
             self.grid.SetCellFont(0, self.pointer, self.font)
             self.grid.SetCellFont(1, self.pointer, self.font)
-            self.grid.SetCellAlignment(0, self.pointer,
-                                       wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
-            self.grid.SetCellAlignment(1, self.pointer,
-                                       wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
+            self.grid.SetCellAlignment(0, self.pointer, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
+            self.grid.SetCellAlignment(1, self.pointer, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
             self.grid.SetCellValue(0, self.pointer, str(time))
             self.grid.SetCellValue(1, self.pointer, str(value))
-            self.grid.MoveCursorDown(False)
-            self.grid.MoveCursorRight(False)    # True/False - ci po jednom okne alebo skupina okien
+            self.grid.SetReadOnly(0, self.pointer)
+            self.grid.SetReadOnly(1, self.pointer)
+            if not load:
+                self.scroll_table()
         except RuntimeError:
             return
 
-        # TODO updating possibly unnecessary
-        self.Update()
-
-    # TODO returns a constant
-    def get_height(self):
-        return self.rows * 75
+    def scroll_table(self):
+        self.grid.MoveCursorDown(False)
+        self.grid.MoveCursorRight(False)
 
     def get_text(self, event):
         row = event.GetRow()
@@ -94,7 +91,8 @@ class Table(wx.Panel):
             return
         self.speak(self.grid.GetCellValue(row, col))
 
-    def speak(self, value):
+    @staticmethod
+    def speak(value):
         tts = gTTS(text=str(value), lang='sk')
         fp = BytesIO()
         tts.write_to_fp(fp)
