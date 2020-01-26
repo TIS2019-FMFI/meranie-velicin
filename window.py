@@ -1,9 +1,9 @@
 from input_panel import InputPanel
 from splitter import MultiSplitterWindow
-from button_panel import Buttons
+from button_panel import ButtonPanel
 import wx
-from panel_handler import PanelHandler
-from table import Table
+from table_panel import TablePanel
+from handler import Handler
 
 
 class MainWindow(wx.Frame):
@@ -12,12 +12,15 @@ class MainWindow(wx.Frame):
         self.visible_objects = []
         wx.Frame.__init__(self, parent=None, title='Multimeter', size=(1080, 720), pos=(243, 56))
         self.splitter = MultiSplitterWindow(self)
+        self.splitter.SetOrientation(wx.VERTICAL)
 
-        self.handler = None
-        self.buttons: Buttons = None
-        self.table_panel: Table = None
-        self.input_panel: InputPanel = None
-        self.panel_handler: PanelHandler = None
+        self.buttons = ButtonPanel(self.splitter)
+        self.handler = Handler(self)
+        self.buttons.handler = self.handler
+        self.table_panel = TablePanel(self.splitter, self.buttons)
+        self.input_panel = InputPanel(self.splitter)
+        self.table_panel.Hide()
+        self.input_panel.Hide()
 
         self.cont_measurement = True
         self.timer = wx.Timer(self)
@@ -25,15 +28,7 @@ class MainWindow(wx.Frame):
         # TODO bind TAB
         # self.Bind(wx.EVT_NAVIGATION_KEY, self.key)
 
-    def create_splitter(self, handler):
-        self.handler = handler
-        self.buttons = Buttons(self.handler, self.splitter)
-        self.panel_handler = PanelHandler(self, self.splitter)
-        self.splitter.SetOrientation(wx.VERTICAL)
-
-        self.handler.panel_handler = self.panel_handler
-        self.handler.buttons = self.buttons
-        self.handler.handle('main', tuple())
+        self.bind_buttons()
 
     def bind_buttons(self):
         new_id = 1
@@ -72,3 +67,6 @@ class MainWindow(wx.Frame):
 
     def key(self, event):
         print(event)
+
+    def create_table_panel(self):
+        self.table_panel = TablePanel(self.splitter, self.buttons)

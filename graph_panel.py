@@ -1,9 +1,9 @@
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
-from table import *
+import wx
 
 
-class Graph(wx.Panel):
+class GraphPanel(wx.Panel):
 
     def __init__(self, parent):
         wx.Panel.__init__(self, parent=parent)

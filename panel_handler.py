@@ -1,6 +1,6 @@
-from draw_graph import Graph
+from graph_panel import GraphPanel
 from input_panel import InputPanel
-from table import Table
+from table_panel import TablePanel
 
 
 class PanelHandler:
@@ -27,10 +27,10 @@ class PanelHandler:
         self.add(self.window.buttons)
 
     def during_measurement_panels(self):
-        self.window.table_panel = self.create_table_panel()
         self.panels[0].Hide()
         self.window.input_panel.clear()
         self.clear()
+        self.window.create_table_panel()
         self.add(self.window.buttons, 60)
         self.add(self.window.table_panel, 170)
 
@@ -41,7 +41,7 @@ class PanelHandler:
 
     def graph_panels(self):
         self.clear()
-        graph = Graph(self.window.splitter)
+        graph = GraphPanel(self.window.splitter)
         self.add(self.window.buttons, 55)
         self.add(self.window.table_panel, 170)
         self.add(graph, 445)
@@ -50,13 +50,10 @@ class PanelHandler:
     def clear(self, second_measurement=False):
         for panel in self.panels:
             self.splitter.DetachWindow(panel)
-            if second_measurement and (isinstance(panel, Table) or isinstance(panel, Graph)):
+            if second_measurement and (isinstance(panel, TablePanel) or isinstance(panel, GraphPanel)):
                 panel.Destroy()
         self.panels.clear()
 
     def add(self, panel, sash_pos=-1):
         self.panels.append(panel)
         self.splitter.AppendWindow(panel, sash_pos)
-
-    def create_table_panel(self):
-        return Table(self.window.splitter, self.window.buttons)

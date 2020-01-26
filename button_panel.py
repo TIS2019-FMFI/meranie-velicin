@@ -1,12 +1,12 @@
 import wx
 
 
-class Buttons(wx.Panel):
+class ButtonPanel(wx.Panel):
 
-    def __init__(self, handler, parent=None):
+    def __init__(self, parent=None):
         wx.Panel.__init__(self, parent=parent)
 
-        self.handler = handler
+        self.handler = None
 
         self.font = wx.Font(20, wx.ROMAN, wx.NORMAL, wx.NORMAL)
 

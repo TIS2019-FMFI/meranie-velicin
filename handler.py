@@ -1,10 +1,6 @@
-import wx
-
-from button_panel import Buttons
 from connection import Connection
 from measurement_data import *
 from panel_handler import PanelHandler
-from window import MainWindow
 from messagebox import AlertBox
 
 
@@ -12,8 +8,8 @@ class Handler:
 
     def __init__(self, main_window):
         self.window = main_window
-        self.panel_handler: PanelHandler = None
-        self.buttons: Buttons = None
+        self.panel_handler = PanelHandler(self.window, self.window.splitter)
+        self.buttons = self.window.buttons
         self.data = MeasurementData()
         self.connection = Connection(self.data, self)
         self.alert = AlertBox()
@@ -43,7 +39,7 @@ class Handler:
             pass
 
     def load(self, *args):
-        self.window.table_panel = self.panel_handler.create_table_panel()
+        self.window.create_table_panel()
         self.data = unpickle(args[0])
         for value in self.data.values:
             self.window.table_panel.add(value[0], value[1][0], True)
@@ -87,12 +83,3 @@ class Handler:
     def main(self):
         self.buttons.button_handler('start')
         self.panel_handler.handle('start')
-
-
-if __name__ == "__main__":
-    app = wx.App()
-    window = MainWindow()
-    window.create_splitter(Handler(window))
-    window.bind_buttons()
-    window.Show()
-    app.MainLoop()

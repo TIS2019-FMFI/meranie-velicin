@@ -5,7 +5,7 @@ from io import BytesIO
 import pygame
 
 
-class Table(wx.Panel):
+class TablePanel(wx.Panel):
 
     def __init__(self, parent, buttons):
         wx.Panel.__init__(self, parent=parent)
