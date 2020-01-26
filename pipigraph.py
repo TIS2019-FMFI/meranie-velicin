@@ -16,7 +16,7 @@ class PipiGraph:
             return False
 
     def play(self, value):
-        #values: 0 - 1023
+        # values: 0 - 1023
         Beep(500 + value, 500)
 
 

@@ -1,28 +1,41 @@
+from input_panel import InputPanel
 from splitter import MultiSplitterWindow
-import button_panel
+from button_panel import Buttons
 import wx
 from panel_handler import PanelHandler
+from table import Table
 
 
 class MainWindow(wx.Frame):
 
-    def __init__(self, handler):
+    def __init__(self):
         self.visible_objects = []
         wx.Frame.__init__(self, parent=None, title='Multimeter', size=(1080, 720), pos=(243, 56))
         self.splitter = MultiSplitterWindow(self)
 
+        self.handler = None
+        self.buttons: Buttons = None
+        self.table_panel: Table = None
+        self.input_panel: InputPanel = None
+        self.panel_handler: PanelHandler = None
+
+        self.cont_measurement = True
+        self.timer = wx.Timer(self)
+
+        # TODO bind TAB
+        # self.Bind(wx.EVT_NAVIGATION_KEY, self.key)
+
+    def create_splitter(self, handler):
         self.handler = handler
-        self.handler.window = self
-        self.buttons = button_panel.Buttons(self.handler, self.splitter)
-
-        self.table_panel = None
-        self.input_panel = None
+        self.buttons = Buttons(self.handler, self.splitter)
         self.panel_handler = PanelHandler(self, self.splitter)
-        self.buttons.button_handler('start')
-        self.panel_handler.handle('start')
-
         self.splitter.SetOrientation(wx.VERTICAL)
 
+        self.handler.panel_handler = self.panel_handler
+        self.handler.buttons = self.buttons
+        self.handler.handle('main', tuple())
+
+    def bind_buttons(self):
         new_id = 1
         display_id = 2
         export_id = 3
@@ -37,20 +50,14 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.buttons.load, id=load_id)
         self.Bind(wx.EVT_MENU, self.buttons.stop, id=quit_id)
 
-        self.accel_tbl = wx.AcceleratorTable([
+        accel_tbl = wx.AcceleratorTable([
             (wx.ACCEL_CTRL, ord('N'), new_id),
             (wx.ACCEL_CTRL, ord('G'), display_id),
             (wx.ACCEL_CTRL, ord('E'), export_id),
             (wx.ACCEL_CTRL, ord('S'), save_id),
             (wx.ACCEL_CTRL, ord('L'), load_id),
             (wx.ACCEL_CTRL, ord('Q'), quit_id)])
-        self.SetAcceleratorTable(self.accel_tbl)
-
-        self.cont_measurement = True
-        self.timer = wx.Timer(self)
-
-        # TODO bind TAB
-        # self.Bind(wx.EVT_NAVIGATION_KEY, self.key)
+        self.SetAcceleratorTable(accel_tbl)
 
     def update(self):
         self.Bind(wx.EVT_TIMER, self.check)
@@ -61,7 +68,7 @@ class MainWindow(wx.Frame):
             self.Bind(wx.EVT_TIMER, self.check)
             self.timer.StartOnce(200)
         else:
-            self.handler.cancel()
+            self.handler.cancel(True)
 
     def key(self, event):
         print(event)

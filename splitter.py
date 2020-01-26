@@ -1,60 +1,9 @@
-# ----------------------------------------------------------------------
-# Name:        wx.lib.splitter
-# Purpose:     A class similar to wx.SplitterWindow but that allows more
-#              than a single split
-#
-# Author:      Robin Dunn
-#
-# Created:     9-June-2005
-# Copyright:   (c) 2005-2018 by Total Control Software
-# Licence:     wxWindows license
-# Tags:        phoenix-port, unittest, documentation, py3-port
-# ----------------------------------------------------------------------
-"""
-This module provides the :class:`~lib.splitter.MultiSplitterWindow` class, which is very
-similar to the standard :class:`SplitterWindow` except it can be split
-more than once.
-"""
-
 import wx
 
 _RENDER_VER = (2, 6, 1, 1)
 
 
-# ----------------------------------------------------------------------
-
 class MultiSplitterWindow(wx.Panel):
-    """
-    This class is very similar to `wx.SplitterWindow` except that it
-    allows for more than two windows and more than one sash.  Many of
-    the same styles, constants, and methods behave the same as in
-    wx.SplitterWindow.  The key differences are seen in the methods
-    that deal with the child windows managed by the splitter, and also
-    those that deal with the sash positions.  In most cases you will
-    need to pass an index value to tell the class which window or sash
-    you are refering to.
-
-    The concept of the sash position is also different than in
-    wx.SplitterWindow.  Since the wx.Splitterwindow has only one sash
-    you can think of it's position as either relative to the whole
-    splitter window, or as relative to the first window pane managed
-    by the splitter.  Once there is more than one sash then the
-    distinciton between the two concepts needs to be clairified.  I've
-    chosen to use the second definition, and sash positions are the
-    distance (either horizontally or vertically) from the origin of
-    the window just before the sash in the splitter stack.
-
-    NOTE: These things are not yet supported:
-
-        * Using negative sash positions to indicate a position offset
-          from the end.
-
-        * User controlled unsplitting (with double clicks on the sash
-          or dragging a sash until the pane size is zero.)
-
-        * Sash gravity
-
-    """
 
     def __init__(self, parent, id=-1,
                  pos=wx.DefaultPosition, size=wx.DefaultSize,
@@ -62,27 +11,23 @@ class MultiSplitterWindow(wx.Panel):
         """
         Default class constructor.
 
-        :param wx.Window `parent`: the parent window
-        :param integer `id`: an identifier for the control: a value of -1 is taken to mean a default
-        :param wx.Point `pos`: the control position. A value of (-1, -1) indicates a default position,
+        :param wx.Window parent: the parent window
+        :param integer id: an identifier for the control: a value of -1 is taken to mean a default
+        :param wx.Point pos: the control position. A value of (-1, -1) indicates a default position,
           chosen by either the windowing system or wxPython, depending on platform
-        :param wx.Size `size`: the control size. A value of (-1, -1) indicates a default size,
+        :param wx.Size size: the control size. A value of (-1, -1) indicates a default size,
           chosen by either the windowing system or wxPython, depending on platform
-        :param integer `style`: the control window style
-        :param string `name`: the control name
+        :param integer style: the control window style
+        :param string name: the control name
         """
-        # always turn on tab traversal
         style |= wx.TAB_TRAVERSAL
 
-        # and turn off any border styles
         style &= ~wx.BORDER_MASK
         style |= wx.BORDER_NONE
 
-        # initialize the base class
         wx.Panel.__init__(self, parent, id, pos, size, style, name)
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
 
-        # initialize data members
         self._windows = []
         self._sashes = []
         self._pending = {}
@@ -101,56 +46,28 @@ class MultiSplitterWindow(wx.Panel):
         self._isHot = False
         self._drawSashInBackgroundColour = False
 
-        # Bind event handlers
         self.Bind(wx.EVT_PAINT, self._OnPaint)
         self.Bind(wx.EVT_IDLE, self._OnIdle)
         self.Bind(wx.EVT_SIZE, self._OnSize)
         self.Bind(wx.EVT_MOUSE_EVENTS, self._OnMouse)
 
     def SetOrientation(self, orient):
-        """
-        Set whether the windows managed by the splitter will be
-        stacked vertically or horizontally.  The default is
-        horizontal.
-
-        :param `orient`: either ``wx.VERTICAL`` or ``wx.HORIZONTAL``
-        """
         assert orient in [wx.VERTICAL, wx.HORIZONTAL]
         self._orient = orient
 
     def GetOrientation(self):
-        """
-        Returns the current orientation of the splitter, either
-        ``wx.VERTICAL`` or ``wx.HORIZONTAL``.
-        """
         return self._orient
 
     def SetBackgroundColour(self, color):
-        """
-        Sets the back ground colour.
-
-        :param wx.Colour `color`: the colour to use.
-
-        """
         wx.Panel.SetBackgroundColour(self, color)
         self._drawSashInBackgroundColour = True
         if wx.NullColour == color:
             self._drawSashInBackgroundColour = False
 
     def SetMinimumPaneSize(self, minSize):
-        """
-        Set the smallest size that any pane will be allowed to be
-        resized to.
-
-        :param int `minSize`: the minimum size of pane
-
-        """
         self._minimumPaneSize = minSize
 
     def GetMinimumPaneSize(self):
-        """
-        Returns the smallest allowed size for a window pane.
-        """
         return self._minimumPaneSize
 
     def AppendWindow(self, window, sashPos=-1):
@@ -158,8 +75,8 @@ class MultiSplitterWindow(wx.Panel):
         Add a new window to the splitter at the right side or bottom
         of the window stack.
 
-        :param `window`: the window to add to the splitter
-        :param `sashPos`: if given it is used to size the new window
+        :param window: the window to add to the splitter
+        :param sashPos: if given it is used to size the new window
 
         """
         self.InsertWindow(len(self._windows), window, sashPos)
@@ -168,9 +85,9 @@ class MultiSplitterWindow(wx.Panel):
         """
         Insert a new window into the splitter.
 
-        :param int `idx`: the position to insert the window at.
-        :param `window`: the window to add to the splitter
-        :param `sashPos`: if given it is used to size the new window
+        :param int idx: the position to insert the window at.
+        :param window: the window to add to the splitter
+        :param sashPos: if given it is used to size the new window
 
         """
         assert window not in self._windows, "A window can only be in the splitter once!"
@@ -186,10 +103,10 @@ class MultiSplitterWindow(wx.Panel):
     def DetachWindow(self, window):
         """
         Removes the window from the stack of windows managed by the
-        splitter.  The window will still exist so you should `Hide` or
-        `Destroy` it as needed.
+        splitter.  The window will still exist so you should Hide or
+        Destroy it as needed.
 
-        :param `window`: the window to be removed from the splitter
+        :param window: the window to be removed from the splitter
 
         """
         assert window in self._windows, "Unknown window!"
@@ -202,10 +119,10 @@ class MultiSplitterWindow(wx.Panel):
         """
         Replaces oldWindow (which is currently being managed by the
         splitter) with newWindow.  The oldWindow window will still
-        exist so you should `Hide` or `Destroy` it as needed.
+        exist so you should Hide or Destroy it as needed.
 
-        :param `oldWindow`: the window to be replace
-        :param `newWindow`: the window to replace the above window
+        :param oldWindow: the window to be replace
+        :param newWindow: the window to replace the above window
 
         """
         assert oldWindow in self._windows, "Unknown window!"
@@ -219,8 +136,8 @@ class MultiSplitterWindow(wx.Panel):
         """
         Trade the positions in the splitter of the two windows.
 
-        :param `window1`: the first window to switch position
-        :param `window2`: the second window to switch position
+        :param window1: the first window to switch position
+        :param window2: the second window to switch position
 
         """
         assert window1 in self._windows, "Unknown window!"
@@ -235,7 +152,7 @@ class MultiSplitterWindow(wx.Panel):
         """
         Returns the idx'th window being managed by the splitter.
 
-        :param int `idx`: get the window at the given index
+        :param int idx: get the window at the given index
 
         """
         assert idx < len(self._windows)
@@ -246,38 +163,21 @@ class MultiSplitterWindow(wx.Panel):
         Returns the position of the idx'th sash, measured from the
         left/top of the window preceding the sash.
 
-        :param int `idx`: get the sash position of the given index
+        :param int idx: get the sash position of the given index
 
         """
         assert idx < len(self._sashes)
         return self._sashes[idx]
 
     def SetSashPosition(self, idx, pos):
-        """
-        Set the position of the idx'th sash, measured from the left/top
-        of the window preceding the sash.
-
-        :param int `idx`: set the sash position of the given index
-        :param int `pos`: the sash position
-
-        """
         assert idx < len(self._sashes)
         self._sashes[idx] = pos
         self._SizeWindows()
 
     def SizeWindows(self):
-        """
-        Reposition and size the windows managed by the splitter.
-        Useful when windows have been added/removed or when styles
-        have been changed.
-        """
         self._SizeWindows()
 
     def DoGetBestSize(self):
-        """
-        Overridden base class virtual.  Determines the best size of
-        the control based on the best sizes of the child windows.
-        """
         best = wx.Size(0, 0)
         if not self._windows:
             best = wx.Size(10, 10)
@@ -302,9 +202,6 @@ class MultiSplitterWindow(wx.Panel):
         best.height += border
         return best
 
-    # -------------------------------------
-    # Event handlers
-
     def _OnPaint(self, evt):
         dc = wx.PaintDC(self)
         self._DrawSash(dc)
@@ -318,9 +215,6 @@ class MultiSplitterWindow(wx.Panel):
 
     def _OnIdle(self, evt):
         evt.Skip()
-        # if this is the first idle time after a sash position has
-        # potentially been set, allow _SizeWindows to check for a
-        # requested size.
         if not self._checkRequestedSashPosition:
             self._checkRequestedSashPosition = True
             self._SizeWindows()
@@ -497,7 +391,7 @@ class MultiSplitterWindow(wx.Panel):
             if newPos2 == -1:
                 newPos1 = -1
 
-        return (newPos1, newPos2)
+        return newPos1, newPos2
 
     def _AdjustSashPosition(self, idx, newPos1, newPos2=-1, adjustNeighbor=False):
         total = newPos1 + newPos2
@@ -524,7 +418,7 @@ class MultiSplitterWindow(wx.Panel):
                 newPos2 = minSize
                 newPos1 = total - newPos2
 
-        return (newPos1, newPos2)
+        return newPos1, newPos2
 
     def _DoSetSashPosition(self, idx, newPos1, newPos2=-1, adjustNeighbor=False):
         newPos1, newPos2 = self._AdjustSashPosition(idx, newPos1, newPos2, adjustNeighbor)
@@ -691,7 +585,7 @@ class MultiSplitterWindow(wx.Panel):
             hitMin = pos - tolerance
             hitMax = pos + self._GetSashSize() + tolerance
 
-            if z >= hitMin and z <= hitMax:
+            if hitMin <= z <= hitMax:
                 return idx
 
             pos += self._GetSashSize()
@@ -749,28 +643,9 @@ class MultiSplitterWindow(wx.Panel):
         return not self.GetEventHandler().ProcessEvent(evt) or evt.IsAllowed()
 
 
-# ----------------------------------------------------------------------
-
 class MultiSplitterEvent(wx.PyCommandEvent):
-    """
-    This event class is almost the same as `wx.SplitterEvent` except
-    it adds an accessor for the sash index that is being changed.  The
-    same event type IDs and event binders are used as with
-    `wx.SplitterEvent`.
-    """
 
     def __init__(self, type=wx.wxEVT_NULL, splitter=None):
-        """
-        Constructor.
-
-        Used internally by wxWidgets only.
-
-        :param `eventType`:
-        :type `eventType`: EventType
-        :param `splitter`:
-        :type `splitter`: SplitterWindow
-
-        """
         wx.PyCommandEvent.__init__(self, type)
         if splitter:
             self.SetEventObject(splitter)
@@ -780,98 +655,22 @@ class MultiSplitterEvent(wx.PyCommandEvent):
         self.isAllowed = True
 
     def SetSashIdx(self, idx):
-        """
-        In the case of ``wxEVT_SPLITTER_SASH_POS_CHANGED`` events, sets the
-        new sash index.
-
-        In the case of ``wxEVT_SPLITTER_SASH_POS_CHANGING`` events, sets the
-        new tracking bar position so visual feedback during dragging will
-        represent that change that will actually take place. Set to -1 from
-        the event handler code to prevent reindexing.
-
-        May only be called while processing ``wxEVT_SPLITTER_SASH_POS_CHANGING``
-        and ``wxEVT_SPLITTER_SASH_POS_CHANGED`` events.
-
-        :param int `pos`: New sash index.
-
-        """
         self.sashIdx = idx
 
     def SetSashPosition(self, pos):
-        """
-        In the case of ``wxEVT_SPLITTER_SASH_POS_CHANGED`` events, sets the
-        new sash position.
-
-        In the case of ``wxEVT_SPLITTER_SASH_POS_CHANGING`` events, sets the
-        new tracking bar position so visual feedback during dragging will
-        represent that change that will actually take place. Set to -1 from
-        the event handler code to prevent repositioning.
-
-        May only be called while processing ``wxEVT_SPLITTER_SASH_POS_CHANGING``
-        and ``wxEVT_SPLITTER_SASH_POS_CHANGED`` events.
-
-        :param int `pos`: New sash position.
-
-        """
         self.sashPos = pos
 
     def GetSashIdx(self):
-        """
-        Returns the new sash index.
-
-        May only be called while processing ``wxEVT_SPLITTER_SASH_POS_CHANGING``
-        and  ``wxEVT_SPLITTER_SASH_POS_CHANGED`` events.
-
-        :rtype: `int`
-
-        """
         return self.sashIdx
 
     def GetSashPosition(self):
-        """
-        Returns the new sash position.
-
-        May only be called while processing ``wxEVT_SPLITTER_SASH_POS_CHANGING``
-        and  ``wxEVT_SPLITTER_SASH_POS_CHANGED`` events.
-
-        :rtype: `int`
-
-        """
         return self.sashPos
 
-    # methods from wx.NotifyEvent
     def Veto(self):
-        """
-        Prevents the change announced by this event from happening.
-
-        It is in general a good idea to notify the user about the reasons
-        for vetoing the change because otherwise the applications behaviour
-        (which just refuses to do what the user wants) might be quite
-        surprising.
-
-        """
         self.isAllowed = False
 
     def Allow(self):
-        """
-        This is the opposite of :meth:`Veto` : it explicitly allows the
-        event to be processed.
-
-        For most events it is not necessary to call this method as the events
-        are allowed anyhow but some are forbidden by default (this will be
-        mentioned in the corresponding event description).
-
-        """
         self.isAllowed = True
 
     def IsAllowed(self):
-        """
-        Returns ``True`` if the change is allowed (:meth:`Veto` hasn't been
-        called) or ``False`` otherwise (if it was).
-
-        :rtype: `bool`
-
-        """
         return self.isAllowed
-
-# ----------------------------------------------------------------------
