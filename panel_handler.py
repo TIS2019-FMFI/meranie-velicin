@@ -9,14 +9,8 @@ class PanelHandler:
         self.window = window
         self.splitter = splitter
         self.panels = []
-        self.calls = {'start': self.start_panel, 'info': self.measurement_info_panels,
-                      'during': self.during_measurement_panels, 'after': self.after_panels,
-                      'graph': self.graph_panels}
 
-    def handle(self, method):
-        self.calls[method]()
-
-    def measurement_info_panels(self):
+    def info_panels(self):
         if self.window.input_panel is None:
             self.window.input_panel = InputPanel(self.window.splitter)
         self.clear(True)
@@ -38,6 +32,7 @@ class PanelHandler:
         self.clear()
         self.add(self.window.buttons, 55)
         self.add(self.window.table_panel, 170)
+        self.window.table_panel.show_scrollbar()
 
     def graph_panels(self):
         self.clear()

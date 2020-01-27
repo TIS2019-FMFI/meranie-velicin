@@ -33,7 +33,7 @@ class Connection:
                     self.port = serial.Serial(device.device, 2400, timeout=None, parity=serial.PARITY_NONE, rtscts=1)
                     return True
                 except serial.serialutil.SerialException:
-                    self.handler.handle('info', tuple())
+                    self.handler.info()
                     return False
         return False
 

@@ -59,40 +59,31 @@ class ButtonPanel(wx.Panel):
                                style=wx.RESIZE_BORDER | wx.DD_DIR_MUST_EXIST) as dialog:
                 if dialog.ShowModal() == wx.ID_CANCEL:
                     return
-                self.handler.handle('load', (dialog.GetPath(),))
+                self.handler.load(dialog.GetPath())
 
     def info(self, event):
         if self.window_type in ['start', 'after', 'graph']:
-            self.handler.handle('info', tuple())
+            self.handler.info()
 
     def start(self, event):
         if self.window_type in ['info']:
-            self.handler.handle('during', tuple())
+            self.handler.during()
 
     def stop(self, event):
         if self.window_type in ['during']:
-            self.handler.handle('cancel', tuple())
+            self.handler.cancel()
 
     def save(self, event):
         if self.window_type in ['after', 'graph']:
-            self.handler.handle('save', tuple())
+            self.handler.save()
 
     def export(self, event):
         if self.window_type in ['after', 'graph']:
-            self.handler.handle('export', tuple())
+            self.handler.export()
 
     def graph(self, event):
         if self.window_type in ['after']:
-            self.handler.handle('graph', tuple())
-
-    def button_handler(self, window):
-        methods = {'info': self.measurement_info_buttons, 'start': self.start_buttons,
-                   'during': self.during_measurement_buttons, 'graph': self.graph_buttons,
-                   'after': self.after_measurement_buttons}
-        self.hide_all()
-        self.window_type = window
-        methods[window]()
-        self.get_visible()
+            self.handler.graph()
 
     def get_visible(self):
         for button in self.all_buttons:
@@ -103,13 +94,16 @@ class ButtonPanel(wx.Panel):
         for button in self.all_buttons:
             button.Hide()
 
-    def measurement_info_buttons(self):
+    def input_buttons(self):
         self.hide_all()
+        self.window_type = 'info'
         button = self.get_button('OK')
         button.SetPosition((600, 100))
         button.Show()
 
     def start_buttons(self):
+        self.hide_all()
+        self.window_type = 'start'
         load_button = self.get_button('Načítať meranie')
         load_button.SetPosition((550, 300))
 
@@ -119,11 +113,15 @@ class ButtonPanel(wx.Panel):
         new_measurement_button.Show()
         load_button.Show()
 
-    def during_measurement_buttons(self):
+    def during_buttons(self):
+        self.hide_all()
+        self.window_type = 'during'
         stop_button = self.get_button('Zastaviť meranie')
         stop_button.Show()
 
     def graph_buttons(self):
+        self.hide_all()
+        self.window_type = 'graph'
         x, y = 0, 0
         gap = 30
         for b in self.get_buttons():
@@ -132,7 +130,9 @@ class ButtonPanel(wx.Panel):
                 b.SetPosition((x, y))
                 x += b.GetTextExtent(b.GetLabel()).GetWidth() + gap
 
-    def after_measurement_buttons(self):
+    def after_buttons(self):
+        self.hide_all()
+        self.window_type = 'after'
         x, y = 0, 0
         gap = 30
 

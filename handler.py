@@ -13,24 +13,18 @@ class Handler:
         self.data = MeasurementData()
         self.connection = Connection(self.data, self)
         self.alert = AlertBox()
-        self.calls = {'during': self.during, 'cancel': self.cancel, 'after': self.after, 'info': self.info,
-                      'save': self.save, 'graph': self.graph, 'export': self.export, 'load': self.load,
-                      'main': self.main}
-
-    def handle(self, key, param):
-        return self.calls[key](*param)
 
     def info(self):
-        self.buttons.button_handler('info')
-        self.panel_handler.handle('info')
+        self.buttons.input_buttons()
+        self.panel_handler.info_panels()
 
     def after(self):
-        self.buttons.button_handler('after')
-        self.panel_handler.handle('after')
+        self.buttons.after_buttons()
+        self.panel_handler.after_panels()
 
     def graph(self):
-        self.buttons.button_handler('graph')
-        self.panel_handler.handle('graph')
+        self.buttons.graph_buttons()
+        self.panel_handler.graph_panels()
 
     def save(self):
         if self.data.pickle():
@@ -43,7 +37,7 @@ class Handler:
         self.data = unpickle(args[0])
         for value in self.data.values:
             self.window.table_panel.add(value[0], value[1][0], True)
-        self.handle('after', tuple())
+        self.after()
 
     def export(self):
         if self.data.export_to_excel():
@@ -65,8 +59,8 @@ class Handler:
         self.connection.interval = float(interval)
         self.data.interval = float(interval)
         if self.connection.establish_connection():
-            self.buttons.button_handler('during')
-            self.panel_handler.handle('during')
+            self.buttons.during_buttons()
+            self.panel_handler.during_measurement_panels()
             self.connection.table = self.window.table_panel
             self.connection.thread = self.connection.create_thread()
             self.connection.thread.start()
@@ -78,9 +72,9 @@ class Handler:
         if error:
             self.alert.show('Device Error')
         self.connection.kill = True
-        self.handle('after', tuple())
+        self.after()
         print(self.data.values)
 
     def main(self):
-        self.buttons.button_handler('start')
-        self.panel_handler.handle('start')
+        self.buttons.start_buttons()
+        self.panel_handler.start_panel()
