@@ -36,5 +36,11 @@ class Parser:
             self.value *= -1
         self.value /= dic.get(int(bytestream[6:7]))
         self.units = scale.get((bytestream[9:10].hex()), '')
+        if self.units in ['m', 'k', 'M', '\u03BC']:
+            # m-milli, k-kilo, M-mega, \u03BC-micro
+            dic2 = {'m': 0.001, 'k': 1000, 'M': 1000000, '\u03BC': 0.000001}
+            self.value *= dic2.get(self.units)
+            self.units = ""
         self.units += all_units.get((bytestream[10:11].hex()), '')
         return self.value, self.units
+
