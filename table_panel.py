@@ -13,6 +13,7 @@ class TablePanel(wx.Panel):
         pygame.init()
 
         self.grid = wx.grid.Grid(self)
+        self.grid.ShowScrollbars(wx.SHOW_SB_NEVER, wx.SHOW_SB_NEVER)
         wx.Accessible(self.grid)
         self.buttons = buttons
         self.grid.SetDefaultRowSize(75)
@@ -106,3 +107,6 @@ class TablePanel(wx.Panel):
         if self.last is None:
             return
         self.speak(self.last)
+
+    def show_scrollbar(self):
+        self.grid.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_NEVER)
