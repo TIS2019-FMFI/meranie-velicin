@@ -40,7 +40,7 @@ class Parser:
             # m-milli, k-kilo, M-mega, \u03BC-micro
             dic2 = {'m': 0.001, 'k': 1000, 'M': 1000000, '\u03BC': 0.000001}
             self.value *= dic2.get(self.units)
+            # self.value = f'{self.value:.5f}'.rstrip('0').rstrip('.')  # format without "e", max. 5 decimal places
             self.units = ""
         self.units += all_units.get((bytestream[10:11].hex()), '')
         return self.value, self.units
-
