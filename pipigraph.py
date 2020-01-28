@@ -2,6 +2,7 @@ import time
 
 from winsound import Beep
 import serial
+import random
 
 
 class PipiGraph:
@@ -35,7 +36,7 @@ class PipiGraph:
         delta = [self.data[index + 1][0] - self.data[index][0],  # time
                  self.data[index + 1][1] - self.data[index][1]]  # value
         mlt = (time_unit - self.data[index][0]) / delta[0]
-        return self.data[index][1] + mlt*delta[1]
+        return round(self.data[index][1] + mlt*delta[1], 2)
 
     def play(self, value):
         # values: 0 - 1023
@@ -43,9 +44,16 @@ class PipiGraph:
 
 
 if __name__ == "__main__":
-    ppg = PipiGraph()
+    val = []
+    for i in range(0, 40, 2):
+        val.append((i, (random.randint(25, 100), 'C')))
+    print(val)
+    ppg = PipiGraph(val)
+    for i in range(1024):
+        x = ppg.get_time(i)
+        print(i, ppg.get_value(x))
     # for i in [10, 30, 50, 70, 50, 30, 10]:
     #     ppg.play(i)
-    while True:
-        print(ppg.device.read(16))
-        time.sleep(1)
+    # while True:
+    #     print(ppg.device.read(16))
+    #     time.sleep(1)
