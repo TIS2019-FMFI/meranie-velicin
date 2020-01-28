@@ -5,9 +5,10 @@ import wx
 
 class GraphPanel(wx.Panel):
 
-    def __init__(self, parent):
+    def __init__(self, parent, values):
         wx.Panel.__init__(self, parent=parent)
         self.figure = Figure()
+        self.values = values
         self.axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self, -1, self.figure)
         self.sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -15,17 +16,12 @@ class GraphPanel(wx.Panel):
         self.SetSizer(self.sizer)
         self.axes.set_xlabel("ČAS")
         self.axes.set_ylabel("HODNOTA")
+        self.draw()
 
-    def draw(self, values):
-        # tuple in form: (time, (value, unit))
+    def draw(self):
         x = []
         y = []
-        for i in values:
+        for i in self.values:
             x.append(i[0])
             y.append(i[1][0])
         self.axes.plot(x, y)
-
-    # TODO parameter names shadowing built-ins
-    def change_axes(self, min, max):
-        self.axes.set_ylim(float(min), float(max))
-        self.canvas.draw()
