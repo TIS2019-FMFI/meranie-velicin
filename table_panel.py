@@ -13,6 +13,7 @@ class TablePanel(wx.Panel):
         pygame.init()
 
         self.grid = wx.grid.Grid(self)
+        self.grid.EnableEditing(False)
         self.grid.ShowScrollbars(wx.SHOW_SB_NEVER, wx.SHOW_SB_NEVER)
         wx.Accessible(self.grid)
         self.buttons = buttons
@@ -73,8 +74,6 @@ class TablePanel(wx.Panel):
             self.grid.SetCellAlignment(1, self.pointer, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
             self.grid.SetCellValue(0, self.pointer, str(time))
             self.grid.SetCellValue(1, self.pointer, str(value))
-            self.grid.SetReadOnly(0, self.pointer)
-            self.grid.SetReadOnly(1, self.pointer)
             if not load:
                 self.scroll_table()
         except RuntimeError:
@@ -103,7 +102,6 @@ class TablePanel(wx.Panel):
         pygame.mixer.music.play()
 
     def read_last(self, event):
-        # TODO bind it with CTRL+R
         if self.last is None:
             return
         self.speak(self.last)
