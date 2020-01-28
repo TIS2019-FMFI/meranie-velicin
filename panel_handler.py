@@ -7,48 +7,48 @@ class PanelHandler:
 
     def __init__(self, window, splitter):
         self.window = window
+        self.input = self.window.input_panel
+        self.buttons = self.window.buttons
+        self.table = self.window.table_panel
         self.splitter = splitter
         self.panels = []
 
     def info_panels(self):
-        if self.window.input_panel is None:
-            self.window.input_panel = InputPanel(self.window.splitter)
         self.clear(True)
-        self.add(self.window.input_panel, 360)
-        self.add(self.window.buttons)
+        if self.input is None:
+            self.input = InputPanel(self.splitter)
+        self.add((self.input, 360), (self.buttons, -1))
+        self.input.focus()
 
     def start_panel(self):
-        self.add(self.window.buttons)
+        self.add((self.buttons, -1))
 
     def during_measurement_panels(self):
-        self.panels[0].Hide()
-        self.window.input_panel.clear()
-        self.clear()
-        self.window.create_table_panel()
-        self.add(self.window.buttons, 60)
-        self.add(self.window.table_panel, 170)
+        self.add((self.buttons, 60), (self.table, 170))
 
     def after_panels(self):
         self.clear()
-        self.add(self.window.buttons, 55)
-        self.add(self.window.table_panel, 170)
-        self.window.table_panel.show_scrollbar()
+        self.add((self.buttons, 55), (self.table, 170))
+        self.table.show_scrollbar()
 
     def graph_panels(self):
         self.clear()
-        graph = GraphPanel(self.window.splitter)
-        self.add(self.window.buttons, 55)
-        self.add(self.window.table_panel, 170)
-        self.add(graph, 445)
-        graph.draw(self.window.handler.data.values)
+        graph = GraphPanel(self.splitter, self.window.handler.data.values)
+        self.add((self.buttons, 55), (self.table, 170), (graph, 445))
 
     def clear(self, second_measurement=False):
         for panel in self.panels:
             self.splitter.DetachWindow(panel)
             if second_measurement and (isinstance(panel, TablePanel) or isinstance(panel, GraphPanel)):
+                self.window.create_table_panel()
                 panel.Destroy()
         self.panels.clear()
 
-    def add(self, panel, sash_pos=-1):
-        self.panels.append(panel)
-        self.splitter.AppendWindow(panel, sash_pos)
+    def add(self, *args):
+        for panel, sash_pos in args:
+            self.panels.append(panel)
+            self.splitter.AppendWindow(panel, sash_pos)
+
+    def before_connection(self):
+        self.panels[0].Hide()
+        self.clear()

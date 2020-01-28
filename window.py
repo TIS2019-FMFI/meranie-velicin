@@ -15,12 +15,13 @@ class MainWindow(wx.Frame):
         self.splitter.SetOrientation(wx.VERTICAL)
 
         self.buttons = ButtonPanel(self.splitter)
-        self.handler = Handler(self)
-        self.buttons.handler = self.handler
         self.table_panel = TablePanel(self.splitter, self.buttons)
         self.input_panel = InputPanel(self.splitter)
         self.table_panel.Hide()
         self.input_panel.Hide()
+        self.panel_handler = None
+        self.handler = Handler(self)
+        self.buttons.handler = self.handler
 
         self.cont_measurement = True
         self.timer = wx.Timer(self)
@@ -37,6 +38,7 @@ class MainWindow(wx.Frame):
         save_id = 4
         load_id = 5
         quit_id = 6
+        read_id = 7
 
         self.Bind(wx.EVT_MENU, self.buttons.info, id=new_id)
         self.Bind(wx.EVT_MENU, self.buttons.graph, id=display_id)
@@ -44,6 +46,7 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.buttons.save, id=save_id)
         self.Bind(wx.EVT_MENU, self.buttons.load, id=load_id)
         self.Bind(wx.EVT_MENU, self.buttons.stop, id=quit_id)
+        self.Bind(wx.EVT_MENU, self.read, id=read_id)
 
         accel_tbl = wx.AcceleratorTable([
             (wx.ACCEL_CTRL, ord('N'), new_id),
@@ -51,8 +54,14 @@ class MainWindow(wx.Frame):
             (wx.ACCEL_CTRL, ord('E'), export_id),
             (wx.ACCEL_CTRL, ord('S'), save_id),
             (wx.ACCEL_CTRL, ord('L'), load_id),
-            (wx.ACCEL_CTRL, ord('Q'), quit_id)])
+            (wx.ACCEL_CTRL, ord('Q'), quit_id),
+            (wx.ACCEL_CTRL, ord('R'), read_id),
+        ])
         self.SetAcceleratorTable(accel_tbl)
+
+    def read(self, event):
+        if self.table_panel is not None and self.cont_measurement:
+            self.table_panel.read_last(event)
 
     def update(self):
         self.Bind(wx.EVT_TIMER, self.check)
@@ -70,3 +79,5 @@ class MainWindow(wx.Frame):
 
     def create_table_panel(self):
         self.table_panel = TablePanel(self.splitter, self.buttons)
+        self.table_panel.Hide()
+        self.panel_handler.table = self.table_panel
