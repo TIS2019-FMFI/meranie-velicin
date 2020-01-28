@@ -7,15 +7,13 @@ class InputPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent=parent, pos=wx.DefaultPosition, size=wx.Size(1080, 360))
         self.font = wx.Font(20, wx.ROMAN, wx.NORMAL, wx.NORMAL)
-        self.all_elements = []
         self.box = wx.BoxSizer(wx.VERTICAL)
 
+        self.all_elements = []
         self.place_elements()
 
         for element in self.all_elements:
             self.box.Add(element)
-            element.SetFont(self.font)
-        self.all_elements[1].SetFocus()
 
         self.user_input = []
         self.alert = AlertBox()
@@ -28,6 +26,8 @@ class InputPanel(wx.Panel):
         for label in labels:
             text = wx.StaticText(parent=self, id=wx.ID_ANY, label=label, pos=text_position)
             input_field = wx.TextCtrl(parent=self, id=wx.ID_ANY, value='', pos=field_position, size=(250, 35))
+            text.SetFont(self.font)
+            input_field.SetFont(self.font)
 
             self.all_elements.append(text)
             self.all_elements.append(input_field)
@@ -44,7 +44,10 @@ class InputPanel(wx.Panel):
             self.all_elements[1].SetFocus()
             return False
         try:
-            float(self.user_input[1])
+            interval = float(self.user_input[1])
+            if interval <= 0:
+                self.alert.show('Interval merania musí byť väčší ako 0!')
+                return False
             return True
         except ValueError:
             self.alert.show('Nesprávne zadaný interval merania!')
@@ -56,3 +59,6 @@ class InputPanel(wx.Panel):
         self.user_input.clear()
         self.all_elements[1].Clear()
         self.all_elements[3].Clear()
+
+    def focus(self):
+        self.all_elements[1].SetFocus()
