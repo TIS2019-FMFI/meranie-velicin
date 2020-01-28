@@ -26,8 +26,16 @@ class PipiGraph:
         """
         return self.min_time + ((self.max_time - self.min_time) * (value / 1023.001))
 
-    def get_value(self, time):
-        ...
+    def get_value(self, time_unit):
+        index = 0
+        for i in range(len(self.data)):
+            if self.data[i][0] > time_unit:
+                break
+            index = i
+        delta = [self.data[index + 1][0] - self.data[index][0],  # time
+                 self.data[index + 1][1] - self.data[index][1]]  # value
+        mlt = (time_unit - self.data[index][0]) / delta[0]
+        return self.data[index][1] + mlt*delta[1]
 
     def play(self, value):
         # values: 0 - 1023
