@@ -38,6 +38,18 @@ class PipiGraph:
         mlt = (time_unit - self.data[index][0]) / delta[0]
         return round(self.data[index][1] + mlt*delta[1], 2)
 
+    def read_value(self):
+        """
+        reads value from the device and plays tone according to the read value
+        """
+        # TODO automatically read value from the device
+        s = self.device.read_until(b'\n')
+        s = (s.decode("utf-8")).split()
+        value = int(s[0])
+        tone = self.get_value(self.get_time(value))
+        self.play(tone)
+        time.sleep(0.7)
+
     def play(self, value):
         # values: 0 - 1023
         Beep(500 + value, 500)
