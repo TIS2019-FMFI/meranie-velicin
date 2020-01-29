@@ -36,19 +36,10 @@ class TablePanel(wx.Panel):
         for i in range(self.rows):
             self.grid.SetRowLabelValue(i, row_labels[i])
 
-        random_id = wx.ID_ANY
-        self.Bind(wx.EVT_MENU, self.exit, id=random_id)
-
         button_list = self.buttons.get_buttons()
         button_list[-1].Bind(wx.EVT_KILL_FOCUS, self.to_grid())
 
-        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('M'), random_id)])
-        self.SetAcceleratorTable(accel_tbl)
-
         self.last = None
-
-    def exit(self):
-        self.buttons.getButtons()[0].SetFocus()
 
     def to_grid(self):
         if isinstance(self.FindFocus(), type(self.grid)):

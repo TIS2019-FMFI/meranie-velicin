@@ -89,6 +89,7 @@ class ButtonPanel(wx.Panel):
         for button in self.all_buttons:
             if button.Shown:
                 self.handler.window.visible_objects.append(button)
+        return self.handler.window.visible_objects
 
     def hide_all(self):
         for button in self.all_buttons:

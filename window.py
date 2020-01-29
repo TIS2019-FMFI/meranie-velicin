@@ -29,6 +29,7 @@ class MainWindow(wx.Frame):
         # TODO bind TAB
         # self.Bind(wx.EVT_NAVIGATION_KEY, self.key)
 
+
         self.bind_buttons()
 
     def bind_buttons(self):
@@ -39,6 +40,7 @@ class MainWindow(wx.Frame):
         load_id = 5
         quit_id = 6
         read_id = 7
+        menu_id = 8
 
         self.Bind(wx.EVT_MENU, self.buttons.info, id=new_id)
         self.Bind(wx.EVT_MENU, self.buttons.graph, id=display_id)
@@ -47,6 +49,7 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.buttons.load, id=load_id)
         self.Bind(wx.EVT_MENU, self.buttons.stop, id=quit_id)
         self.Bind(wx.EVT_MENU, self.read, id=read_id)
+        self.Bind(wx.EVT_MENU, self.menu_bar, id=menu_id)
 
         accel_tbl = wx.AcceleratorTable([
             (wx.ACCEL_CTRL, ord('N'), new_id),
@@ -56,6 +59,7 @@ class MainWindow(wx.Frame):
             (wx.ACCEL_CTRL, ord('L'), load_id),
             (wx.ACCEL_CTRL, ord('Q'), quit_id),
             (wx.ACCEL_CTRL, ord('R'), read_id),
+            (wx.ACCEL_CTRL, ord('M'), menu_id)
         ])
         self.SetAcceleratorTable(accel_tbl)
 
@@ -81,3 +85,8 @@ class MainWindow(wx.Frame):
         self.table_panel = TablePanel(self.splitter, self.buttons)
         self.table_panel.Hide()
         self.panel_handler.table = self.table_panel
+
+    def menu_bar(self, event):
+        self.buttons.get_visible()[-1].SetFocus()
+
+
