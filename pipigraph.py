@@ -1,5 +1,4 @@
 import time
-
 from winsound import Beep
 import serial
 import random
@@ -17,7 +16,7 @@ class PipiGraph:
 
     def create_connection(self):
         try:
-            return serial.Serial('COM5', 9600, timeout=None, parity=serial.PARITY_NONE, rtscts=1)
+            return serial.Serial('COM3', 9600, timeout=None, parity=serial.PARITY_NONE, rtscts=1)
         except serial.serialutil.SerialException:
             return False
 
@@ -38,32 +37,33 @@ class PipiGraph:
         mlt = (time_unit - self.data[index][0]) / delta[0]
         return round(self.data[index][1] + mlt*delta[1], 2)
 
-    def read_value(self):
+    def read_values(self):
         """
         reads value from the device and plays tone according to the read value
         """
-        # TODO automatically read value from the device
-        s = self.device.read_until(b'\n')
-        s = (s.decode("utf-8")).split()
-        value = int(s[0])
-        tone = self.get_value(self.get_time(value))
-        self.play(tone)
-        time.sleep(0.7)
+        while True:
+            s = self.device.read_until(b'\n')
+            s = (s.decode("utf-8")).split()
+            value = int(s[0])
+            tone = self.get_value(self.get_time(value))
+            self.play(tone)
+            time.sleep(0.5)
 
     def play(self, value):
         # values: 0 - 1023
-        Beep(500 + value, 500)
+        Beep(500 + int(value), 500)
 
 
 if __name__ == "__main__":
     val = []
     for i in range(0, 40, 2):
         val.append((i, (random.randint(25, 100), 'C')))
-    print(val)
+    # print(val)
     ppg = PipiGraph(val)
-    for i in range(1024):
-        x = ppg.get_time(i)
-        print(i, ppg.get_value(x))
+    ppg.read_values()
+    # for i in range(1024):
+    #     x = ppg.get_time(i)
+    #     print(i, ppg.get_value(x))
     # for i in [10, 30, 50, 70, 50, 30, 10]:
     #     ppg.play(i)
     # while True:
