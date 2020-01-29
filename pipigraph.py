@@ -13,6 +13,7 @@ class PipiGraph:
             self.data.append((x[0], x[1][0]))
         self.min_time = self.data[0][0]
         self.max_time = self.data[-1][0]
+        self.mem = dict()
 
     def create_connection(self):
         try:
@@ -45,7 +46,11 @@ class PipiGraph:
             s = self.device.read_until(b'\n')
             s = (s.decode("utf-8")).split()
             value = int(s[0])
-            tone = self.get_value(self.get_time(value))
+            if self.mem.get(value) is None:
+                tone = self.get_value(self.get_time(value))
+                self.mem[value] = tone
+            else:
+                tone = self.mem[value]
             self.play(tone)
             time.sleep(0.5)
 
