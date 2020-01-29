@@ -9,9 +9,7 @@ class TablePanel(wx.Panel):
 
     def __init__(self, parent, buttons):
         wx.Panel.__init__(self, parent=parent)
-
         pygame.init()
-
         self.grid = wx.grid.Grid(self)
         self.grid.EnableEditing(False)
         self.grid.ShowScrollbars(wx.SHOW_SB_NEVER, wx.SHOW_SB_NEVER)
@@ -27,6 +25,7 @@ class TablePanel(wx.Panel):
         self.font = wx.Font(20, wx.DEFAULT, wx.NORMAL, wx.NORMAL)
         self.grid.Bind(wx.grid.EVT_GRID_CELL_LEFT_CLICK, self.get_text)
         self.grid.Bind(wx.grid.EVT_GRID_SELECT_CELL, self.get_text)
+        self.last = None
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.grid, 1)
@@ -36,23 +35,13 @@ class TablePanel(wx.Panel):
         for i in range(self.rows):
             self.grid.SetRowLabelValue(i, row_labels[i])
 
-        random_id = wx.ID_ANY
-        self.Bind(wx.EVT_MENU, self.exit, id=random_id)
+        self.Bind(wx.EVT_KEY_DOWN, self.to_menu)
 
-        button_list = self.buttons.get_buttons()
-        button_list[-1].Bind(wx.EVT_KILL_FOCUS, self.to_grid())
-
-        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('M'), random_id)])
-        self.SetAcceleratorTable(accel_tbl)
-
-        self.last = None
-
-    def exit(self):
-        self.buttons.getButtons()[0].SetFocus()
-
-    def to_grid(self):
-        if isinstance(self.FindFocus(), type(self.grid)):
-            self.grid.SetGridCursor(0, 0)
+    def to_menu(self, event):
+        if event.GetUnicodeKey() == wx.WXK_TAB:
+            self.buttons.get_visible()[0].SetFocus()
+        else:
+            event.Skip()
 
     def resize(self, num):
         self.grid.AppendCols(num)
@@ -62,7 +51,6 @@ class TablePanel(wx.Panel):
         if self.pointer + 1 == self.columns:
             self.resize(1)
         self.pointer += 1
-
         self.last = value
 
         try:

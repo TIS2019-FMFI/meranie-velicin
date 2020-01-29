@@ -16,9 +16,7 @@ class ButtonPanel(wx.Panel):
                           self.start]
 
         self.all_buttons = []
-
         self.set_buttons()
-
         self.window_type = None
 
     def set_buttons(self):
@@ -86,9 +84,11 @@ class ButtonPanel(wx.Panel):
             self.handler.graph()
 
     def get_visible(self):
+        self.handler.window.visible_objects.clear()
         for button in self.all_buttons:
             if button.Shown:
                 self.handler.window.visible_objects.append(button)
+        return self.handler.window.visible_objects
 
     def hide_all(self):
         for button in self.all_buttons:
