@@ -86,6 +86,7 @@ class ButtonPanel(wx.Panel):
             self.handler.graph()
 
     def get_visible(self):
+        self.handler.window.visible_objects.clear()
         for button in self.all_buttons:
             if button.Shown:
                 self.handler.window.visible_objects.append(button)
