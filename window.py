@@ -29,7 +29,6 @@ class MainWindow(wx.Frame):
         # TODO bind TAB
         # self.Bind(wx.EVT_NAVIGATION_KEY, self.key)
 
-
         self.bind_buttons()
 
     def bind_buttons(self):
