@@ -8,7 +8,6 @@ from handler import Handler
 
 class MainWindow(wx.Frame):
     def __init__(self):
-        self.visible_objects = []
         wx.Frame.__init__(self, parent=None, title='Multimeter', size=(1080, 720), pos=(243, 56))
         self.splitter = MultiSplitterWindow(self)
         self.splitter.SetOrientation(wx.VERTICAL)
