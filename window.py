@@ -7,9 +7,7 @@ from handler import Handler
 
 
 class MainWindow(wx.Frame):
-
     def __init__(self):
-        self.visible_objects = []
         wx.Frame.__init__(self, parent=None, title='Multimeter', size=(1080, 720), pos=(243, 56))
         self.splitter = MultiSplitterWindow(self)
         self.splitter.SetOrientation(wx.VERTICAL)
@@ -26,10 +24,10 @@ class MainWindow(wx.Frame):
         self.cont_measurement = True
         self.timer = wx.Timer(self)
 
-        # TODO bind TAB
-        # self.Bind(wx.EVT_NAVIGATION_KEY, self.key)
-
         self.bind_buttons()
+
+        self.buttons.get_button('Zastaviť meranie').Bind(wx.EVT_KILL_FOCUS, self.to_grid)
+        self.buttons.get_button('Načítať meranie').Bind(wx.EVT_KILL_FOCUS, self.to_grid)
 
     def bind_buttons(self):
         new_id = 1
@@ -81,3 +79,10 @@ class MainWindow(wx.Frame):
         self.table_panel = TablePanel(self.splitter, self.buttons)
         self.table_panel.Hide()
         self.panel_handler.table = self.table_panel
+
+    def to_grid(self, event):
+        if self.cont_measurement:
+            self.buttons.get_visible()[0].SetFocus()
+            return
+        if isinstance(self.FindFocus(), type(self.table_panel.grid)):
+            self.table_panel.grid.SetGridCursor(1, 0)
