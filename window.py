@@ -81,5 +81,8 @@ class MainWindow(wx.Frame):
         self.panel_handler.table = self.table_panel
 
     def to_grid(self, event):
+        if self.cont_measurement:
+            self.buttons.get_visible()[0].SetFocus()
+            return
         if isinstance(self.FindFocus(), type(self.table_panel.grid)):
             self.table_panel.grid.SetGridCursor(1, 0)

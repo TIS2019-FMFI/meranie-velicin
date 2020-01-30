@@ -48,7 +48,7 @@ class Connection:
             data_string = self.port.read(14)
         except serial.serialutil.SerialException:
             self.handler.window.cont_measurement = False
-        if self.kill:
+        if self.kill and self.handler.window.cont_measurement is False:
             return
         self.scheduler.enter(self.interval, 1, self.get_data)
         try:
