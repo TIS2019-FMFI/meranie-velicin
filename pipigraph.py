@@ -8,9 +8,7 @@ class PipiGraph:
 
     def __init__(self, values):
         self.device = self.create_connection()
-        self.data = []
-        for x in values:
-            self.data.append((x[0], x[1][0]))
+        self.data = values
         self.min_time = self.data[0][0]
         self.max_time = self.data[-1][0]
         self.mem = dict()
@@ -34,9 +32,9 @@ class PipiGraph:
                 break
             index = i
         delta = [self.data[index + 1][0] - self.data[index][0],  # time
-                 self.data[index + 1][1] - self.data[index][1]]  # value
+                 self.data[index + 1][1][0] - self.data[index][1][0]]  # value
         mlt = (time_unit - self.data[index][0]) / delta[0]
-        return round(self.data[index][1] + mlt*delta[1], 2)
+        return round(self.data[index][1][0] + mlt*delta[1], 2)
 
     def read_values(self):
         """
