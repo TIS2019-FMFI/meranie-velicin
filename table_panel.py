@@ -19,7 +19,7 @@ class TablePanel(wx.Panel):
         self.buttons = buttons
         self.grid.SetDefaultRowSize(75)
         self.grid.SetDefaultColSize(125)
-        self.rows, self.columns = 2, 13
+        self.rows, self.columns = 2, 8
         self.pointer = -1
         self.grid.CreateGrid(self.rows, self.columns)
         self.grid.SetColLabelSize(0)
@@ -57,7 +57,7 @@ class TablePanel(wx.Panel):
         self.last = value
 
         try:
-            if not load and self.pointer >= 13:
+            if not load and self.pointer >= 7:
                 self.scroll_table()
             self.grid.SetCellFont(0, self.pointer, self.font)
             self.grid.SetCellFont(1, self.pointer, self.font)
@@ -65,7 +65,7 @@ class TablePanel(wx.Panel):
             self.grid.SetCellAlignment(1, self.pointer, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
             time = (str(round(time, 2))).rstrip('0').rstrip('.')
             self.grid.SetCellValue(0, self.pointer, time)
-            self.grid.SetCellValue(1, self.pointer, str(value+0.98754))
+            self.grid.SetCellValue(1, self.pointer, str(value))
             if not load:
                 self.grid.SetGridCursor(1, self.pointer)
         except RuntimeError:
