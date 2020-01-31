@@ -118,6 +118,8 @@ class ButtonPanel(wx.Panel):
         self.window_type = 'during'
         stop_button = self.get_button('Zastaviť meranie')
         stop_button.Show()
+        stop_button.SetFocus()
+
 
     def graph_buttons(self):
         self.hide_all()
@@ -141,3 +143,5 @@ class ButtonPanel(wx.Panel):
                 b.Show()
                 b.SetPosition((x, y))
                 x += b.GetTextExtent(b.GetLabel()).GetWidth() + gap
+
+        self.get_visible()[0].SetFocus()
