@@ -25,11 +25,13 @@ class PanelHandler:
 
     def during_measurement_panels(self):
         self.add((self.buttons, 60), (self.table, 170))
+        self.buttons.get_visible()[0].SetFocus()
 
     def after_panels(self):
         self.clear()
         self.add((self.buttons, 55), (self.table, 170))
         self.table.show_scrollbar()
+        self.buttons.get_visible()[0].SetFocus()
 
     def graph_panels(self):
         self.clear()

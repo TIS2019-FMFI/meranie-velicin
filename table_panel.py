@@ -9,14 +9,16 @@ class TablePanel(wx.Panel):
 
     def __init__(self, parent, buttons):
         wx.Panel.__init__(self, parent=parent)
+
         pygame.init()
+
         self.grid = wx.grid.Grid(self)
         self.grid.EnableEditing(False)
         self.grid.ShowScrollbars(wx.SHOW_SB_NEVER, wx.SHOW_SB_NEVER)
         wx.Accessible(self.grid)
         self.buttons = buttons
         self.grid.SetDefaultRowSize(75)
-        self.grid.SetDefaultColSize(75)
+        self.grid.SetDefaultColSize(125)
         self.rows, self.columns = 2, 13
         self.pointer = -1
         self.grid.CreateGrid(self.rows, self.columns)
@@ -25,7 +27,6 @@ class TablePanel(wx.Panel):
         self.font = wx.Font(20, wx.DEFAULT, wx.NORMAL, wx.NORMAL)
         self.grid.Bind(wx.grid.EVT_GRID_CELL_LEFT_CLICK, self.get_text)
         self.grid.Bind(wx.grid.EVT_GRID_SELECT_CELL, self.get_text)
-        self.last = None
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.grid, 1)
@@ -35,6 +36,7 @@ class TablePanel(wx.Panel):
         for i in range(self.rows):
             self.grid.SetRowLabelValue(i, row_labels[i])
 
+        self.last = None
         self.Bind(wx.EVT_KEY_DOWN, self.to_menu)
 
     def to_menu(self, event):
@@ -51,6 +53,7 @@ class TablePanel(wx.Panel):
         if self.pointer + 1 == self.columns:
             self.resize(1)
         self.pointer += 1
+
         self.last = value
 
         try:
@@ -60,10 +63,11 @@ class TablePanel(wx.Panel):
             self.grid.SetCellFont(1, self.pointer, self.font)
             self.grid.SetCellAlignment(0, self.pointer, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
             self.grid.SetCellAlignment(1, self.pointer, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
-            self.grid.SetCellValue(0, self.pointer, str(time))
-            self.grid.SetCellValue(1, self.pointer, str(value))
+            time = (str(round(time, 2))).rstrip('0').rstrip('.')
+            self.grid.SetCellValue(0, self.pointer, time)
+            self.grid.SetCellValue(1, self.pointer, str(value+0.98754))
             if not load:
-                self.scroll_table()
+                self.grid.SetGridCursor(1, self.pointer)
         except RuntimeError:
             return
 
@@ -74,7 +78,6 @@ class TablePanel(wx.Panel):
     def get_text(self, event):
         row = event.GetRow()
         col = event.GetCol()
-
         if self.grid.GetCellValue(row, col) == "":
             return
         self.speak(self.grid.GetCellValue(row, col))
