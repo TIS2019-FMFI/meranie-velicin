@@ -120,7 +120,6 @@ class ButtonPanel(wx.Panel):
         stop_button.Show()
         stop_button.SetFocus()
 
-
     def graph_buttons(self):
         self.hide_all()
         self.window_type = 'graph'
