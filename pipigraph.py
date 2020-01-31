@@ -61,14 +61,6 @@ if __name__ == "__main__":
     val = []
     for i in range(0, 40, 2):
         val.append((i, (random.randint(25, 100), 'C')))
-    # print(val)
     ppg = PipiGraph(val)
     ppg.read_values()
-    # for i in range(1024):
-    #     x = ppg.get_time(i)
-    #     print(i, ppg.get_value(x))
-    # for i in [10, 30, 50, 70, 50, 30, 10]:
-    #     ppg.play(i)
-    # while True:
-    #     print(ppg.device.read(16))
-    #     time.sleep(1)
+
