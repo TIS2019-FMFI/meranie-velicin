@@ -39,6 +39,9 @@ class TablePanel(wx.Panel):
         self.last = None
         self.Bind(wx.EVT_KEY_DOWN, self.to_menu)
 
+        self.last_time = None
+        self.now_time = None
+
     def to_menu(self, event):
         if event.GetUnicodeKey() == wx.WXK_TAB:
             self.buttons.get_visible()[0].SetFocus()
@@ -64,6 +67,7 @@ class TablePanel(wx.Panel):
             self.grid.SetCellAlignment(0, self.pointer, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
             self.grid.SetCellAlignment(1, self.pointer, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
             time = (str(round(time, 2))).rstrip('0').rstrip('.')
+            self.now_time = float(time)
             self.grid.SetCellValue(0, self.pointer, time)
             self.grid.SetCellValue(1, self.pointer, str(value))
             if not load:
@@ -82,15 +86,16 @@ class TablePanel(wx.Panel):
             return
         self.speak(self.grid.GetCellValue(row, col))
 
-    @staticmethod
-    def speak(value):
-        tts = gTTS(text=str(value), lang='sk')
-        fp = BytesIO()
-        tts.write_to_fp(fp)
-        fp.seek(0)
-        pygame.mixer.init()
-        pygame.mixer.music.load(fp)
-        pygame.mixer.music.play()
+    def speak(self, value):
+        if self.last_time is None or (self.now_time - self.last_time) >= 3:
+            tts = gTTS(text=str(value), lang='sk')
+            fp = BytesIO()
+            tts.write_to_fp(fp)
+            fp.seek(0)
+            pygame.mixer.init()
+            pygame.mixer.music.load(fp)
+            pygame.mixer.music.play()
+            self.last_time = self.now_time
 
     def read_last(self, event):
         if self.last is None:
