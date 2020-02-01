@@ -86,3 +86,4 @@ class MainWindow(wx.Frame):
             return
         if isinstance(self.FindFocus(), type(self.table_panel.grid)):
             self.table_panel.grid.SetGridCursor(1, 0)
+            self.table_panel.grid.MakeCellVisible(1, 0)
