@@ -55,7 +55,8 @@ class Connection:
         try:
             correct = self.data.insert_value(self.parser.parse(data_string))
             if not correct:
-                self.handler.window.cont_measurement = False
+                self.kill = True
+                return
             last_value = self.data.values[-1]
             self.table.add(last_value[0], last_value[1][0])
         except (ValueError, TypeError):
