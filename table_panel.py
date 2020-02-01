@@ -41,6 +41,7 @@ class TablePanel(wx.Panel):
 
         self.last_time = None
         self.now_time = None
+        self.after_measurement = False
 
     def to_menu(self, event):
         if event.GetUnicodeKey() == wx.WXK_TAB:
@@ -87,7 +88,8 @@ class TablePanel(wx.Panel):
         self.speak(self.grid.GetCellValue(row, col))
 
     def speak(self, value):
-        if self.last_time is None or (self.now_time - self.last_time) >= 3:
+        if ((self.last_time is None or (self.now_time - self.last_time) >= 3)
+                or self.after_measurement):
             tts = gTTS(text=str(value), lang='sk')
             fp = BytesIO()
             tts.write_to_fp(fp)
@@ -104,3 +106,6 @@ class TablePanel(wx.Panel):
 
     def show_scrollbar(self):
         self.grid.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_NEVER)
+
+    def set_after_measurement(self):
+        self.after_measurement = True
