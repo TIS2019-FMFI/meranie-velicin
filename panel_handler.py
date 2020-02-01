@@ -30,6 +30,7 @@ class PanelHandler:
         self.clear()
         self.add((self.buttons, 55), (self.table, 170))
         self.table.show_scrollbar()
+        self.table.set_after_measurement()
 
     def graph_panels(self):
         self.clear()
