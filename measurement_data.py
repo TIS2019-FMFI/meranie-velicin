@@ -11,8 +11,11 @@ class MeasurementData:
         self.values = []
 
     def insert_value(self, value):
+        if len(self.values) > 0 and self.values[-1][1][1] != value[1]:
+            return False
         time = (1 + len(self.values)) * self.interval
         self.values.append((time, value))
+        return True
 
     def get_last_value(self):
         try:
