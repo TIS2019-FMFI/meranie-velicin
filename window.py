@@ -61,10 +61,6 @@ class MainWindow(wx.Frame):
         if self.table_panel is not None and self.cont_measurement:
             self.table_panel.read_last(event)
 
-    def update(self):
-        self.Bind(wx.EVT_TIMER, self.check)
-        self.timer.StartOnce(10)
-
     def check(self, event):
         if self.cont_measurement:
             self.Bind(wx.EVT_TIMER, self.check)
