@@ -53,7 +53,10 @@ class Connection:
             return
         self.scheduler.enter(self.interval, 1, self.get_data)
         try:
-            self.data.insert_value(self.parser.parse(data_string))
+            correct = self.data.insert_value(self.parser.parse(data_string))
+            if not correct:
+                self.kill = True
+                return
             last_value = self.data.values[-1]
             self.table.add(last_value[0], last_value[1][0])
         except (ValueError, TypeError):
