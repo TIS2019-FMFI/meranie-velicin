@@ -1,12 +1,13 @@
 import time
 from winsound import Beep
-import serial
+import serial.tools.list_ports
 import random
 
 
 class PipiGraph:
 
     def __init__(self, values):
+        self.port = None
         self.device = self.create_connection()
         self.data = values
         self.min_time = self.data[0][0]
@@ -14,10 +15,18 @@ class PipiGraph:
         self.mem = dict()
 
     def create_connection(self):
-        try:
-            return serial.Serial('COM3', 9600, timeout=None, parity=serial.PARITY_NONE, rtscts=1)
-        except serial.serialutil.SerialException:
-            return False
+        if self.port is not None:
+            self.port.close()
+        ports = serial.tools.list_ports.comports()
+        print(ports)
+        for device in ports:
+            if hex(device.vid) == '0x1a86' and hex(device.pid) == '0x7523':
+                try:
+                    self.port = serial.Serial(device.device, 9600, timeout=None, parity=serial.PARITY_NONE, rtscts=1)
+                    return True
+                except serial.serialutil.SerialException:
+                    return False
+        return False
 
     def get_time(self, value):
         """
@@ -41,7 +50,7 @@ class PipiGraph:
         reads value from the device and plays tone according to the read value
         """
         while True:
-            s = self.device.read_until(b'\n')
+            s = self.port.read_until(b'\n')
             s = (s.decode("utf-8")).split()
             value = int(s[0])
             if self.mem.get(value) is None:
@@ -52,7 +61,8 @@ class PipiGraph:
             self.play(tone)
             time.sleep(0.5)
 
-    def play(self, value):
+    @staticmethod
+    def play(value):
         # values: 0 - 1023
         Beep(500 + int(value), 500)
 
@@ -63,4 +73,3 @@ if __name__ == "__main__":
         val.append((i, (random.randint(25, 100), 'C')))
     ppg = PipiGraph(val)
     ppg.read_values()
-
