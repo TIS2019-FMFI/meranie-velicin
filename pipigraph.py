@@ -2,7 +2,6 @@ import time
 from winsound import Beep
 import serial.tools.list_ports
 from messagebox import AlertBox
-import random
 
 
 class PipiGraph:
@@ -69,11 +68,3 @@ class PipiGraph:
     def play(value):
         # values: 0 - 1023
         Beep(500 + int(value), 500)
-
-
-if __name__ == "__main__":
-    val = []
-    for i in range(0, 40, 2):
-        val.append((i, (random.randint(25, 100), 'C')))
-    ppg = PipiGraph(val)
-    ppg.read_values()
