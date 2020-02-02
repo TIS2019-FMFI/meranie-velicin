@@ -1,6 +1,7 @@
 import time
 from winsound import Beep
 import serial.tools.list_ports
+from messagebox import AlertBox
 import random
 
 
@@ -13,12 +14,12 @@ class PipiGraph:
         self.min_time = self.data[0][0]
         self.max_time = self.data[-1][0]
         self.mem = dict()
+        self.alert = AlertBox()
 
     def create_connection(self):
         if self.port is not None:
             self.port.close()
         ports = serial.tools.list_ports.comports()
-        print(ports)
         for device in ports:
             if hex(device.vid) == '0x1a86' and hex(device.pid) == '0x7523':
                 try:
@@ -50,6 +51,9 @@ class PipiGraph:
         reads value from the device and plays tone according to the read value
         """
         while True:
+            if self.port is None:
+                # self.alert.show('Zariadenie nie je pripojené!')
+                return
             s = self.port.read_until(b'\n')
             s = (s.decode("utf-8")).split()
             value = int(s[0])
