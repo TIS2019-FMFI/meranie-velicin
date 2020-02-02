@@ -49,7 +49,6 @@ class Connection:
         except serial.serialutil.SerialException:
             self.handler.window.cont_measurement = False
         if self.kill:
-            self.handler.window.cont_measurement = False
             return
         self.scheduler.enter(self.interval, 1, self.get_data)
         try:
@@ -57,7 +56,6 @@ class Connection:
             if not correct:
                 self.handler.window.cont_measurement = False
                 self.kill = True
-                self.handler.cancel(True)
                 return
             last_value = self.data.values[-1]
             self.table.add(last_value[0], last_value[1][0])

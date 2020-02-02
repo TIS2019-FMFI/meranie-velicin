@@ -55,6 +55,7 @@ class Handler:
         else:
             return
         self.window.cont_measurement = True
+        self.window.update()
 
         self.data.clear()
         self.data.file_name = name
