@@ -43,4 +43,5 @@ class Parser:
             self.value = f'{self.value:.5f}'.rstrip('0').rstrip('.')  # format without "e", max. 5 decimal places
             self.units = ""
         self.units += all_units.get((bytestream[10:11].hex()), '')
+        # print("parser", self.value, self.units)
         return self.value, self.units

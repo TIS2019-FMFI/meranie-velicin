@@ -44,18 +44,21 @@ class Connection:
     def get_data(self):
         data_string = None
         try:
-            self.port.reset_input_buffer()
-            data_string = self.port.read(14)
+            data_string = ""
+            while len(data_string) != 14:
+                self.port.reset_input_buffer()
+                data_string = self.port.read_until(b'\n')
         except serial.serialutil.SerialException:
             self.handler.window.cont_measurement = False
         if self.kill:
+            self.handler.window.cont_measurement = False
             return
         self.scheduler.enter(self.interval, 1, self.get_data)
         try:
+            # print("device", data_string)
             correct = self.data.insert_value(self.parser.parse(data_string))
             if not correct:
                 self.handler.window.cont_measurement = False
-                self.kill = True
                 return
             last_value = self.data.values[-1]
             self.table.add(last_value[0], last_value[1][0])
