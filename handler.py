@@ -74,7 +74,7 @@ class Handler:
             self.info()
 
     def cancel(self, error=False):
-        if error:
+        if error and not self.connection.kill:
             self.alert.show('Device Error')
         self.connection.kill = True
         self.after()

@@ -87,9 +87,9 @@ class TablePanel(wx.Panel):
             return
         self.speak(self.grid.GetCellValue(row, col))
 
-    def speak(self, value):
+    def speak(self, value, repeat=False):
         if ((self.last_time is None or (self.now_time - self.last_time) >= 3)
-                or self.after_measurement):
+                or self.after_measurement or repeat):
             tts = gTTS(text=str(value), lang='sk')
             fp = BytesIO()
             tts.write_to_fp(fp)
@@ -102,7 +102,7 @@ class TablePanel(wx.Panel):
     def read_last(self, event):
         if self.last is None:
             return
-        self.speak(self.last)
+        self.speak(self.last, True)
 
     def show_scrollbar(self):
         self.grid.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_NEVER)
