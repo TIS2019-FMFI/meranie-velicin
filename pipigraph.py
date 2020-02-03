@@ -45,26 +45,35 @@ class PipiGraph:
         mlt = (time_unit - self.data[index][0]) / delta[0]
         return round(self.data[index][1][0] + mlt*delta[1], 2)
 
+    def test(self):
+        # test for mapping values
+        for i in range(1024):
+            print(self.get_value(self.get_time(i)))
+
     def read_values(self):
         """
         reads value from the device and plays tone according to the read value
         """
         while True:
-            if self.port is None:
-                # self.alert.show('Zariadenie nie je pripojené!')
+            try:
+                if self.port is None:
+                    self.alert.show('Zariadenie pipi-graf nie je pripojené!')
+                    return
+                self.port.reset_input_buffer()
+                s = self.port.read_until(b'\n')
+                s = (s.decode("utf-8")).split()
+                value = abs(int(s[0]) - 1023)
+                if self.mem.get(value) is None:
+                    tone = self.get_value(self.get_time(value))
+                    self.mem[value] = tone
+                else:
+                    tone = self.mem[value]
+                self.play(tone)
+                time.sleep(0.5)
+            except serial.serialutil.SerialException:
                 return
-            s = self.port.read_until(b'\n')
-            s = (s.decode("utf-8")).split()
-            value = int(s[0])
-            if self.mem.get(value) is None:
-                tone = self.get_value(self.get_time(value))
-                self.mem[value] = tone
-            else:
-                tone = self.mem[value]
-            self.play(tone)
-            time.sleep(0.5)
 
     @staticmethod
     def play(value):
         # values: 0 - 1023
-        Beep(500 + int(value), 500)
+        Beep(500 + int(value*1.5), 500)

@@ -1,6 +1,8 @@
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 import wx
+import threading
+from pipigraph import PipiGraph
 
 
 class GraphPanel(wx.Panel):
@@ -18,6 +20,9 @@ class GraphPanel(wx.Panel):
         self.axes.set_ylabel("HODNOTA")
         self.draw()
 
+        self.thread = threading.Thread(target=self.beep)
+        self.thread.start()
+
     def draw(self):
         x = []
         y = []
@@ -25,3 +30,7 @@ class GraphPanel(wx.Panel):
             x.append(i[0])
             y.append(i[1][0])
         self.axes.plot(x, y)
+
+    def beep(self):
+        ppg = PipiGraph(self.values)
+        ppg.read_values()
