@@ -4,7 +4,8 @@ from button_panel import ButtonPanel
 import wx
 from table_panel import TablePanel
 from handler import Handler
-
+import threading
+from pipigraph import PipiGraph
 
 class MainWindow(wx.Frame):
     def __init__(self):
@@ -18,6 +19,7 @@ class MainWindow(wx.Frame):
         self.table_panel.Hide()
         self.input_panel.Hide()
         self.panel_handler = None
+        self.graph_panel = False
         self.handler = Handler(self)
         self.buttons.handler = self.handler
 
@@ -29,6 +31,9 @@ class MainWindow(wx.Frame):
         self.buttons.get_button('Zastaviť meranie').Bind(wx.EVT_KILL_FOCUS, self.to_grid)
         self.buttons.get_button('Načítať meranie').Bind(wx.EVT_KILL_FOCUS, self.to_grid)
 
+        self.ppg = None
+        self.thread = threading.Thread(target=self.beep)
+
     def bind_buttons(self):
         new_id = 1
         display_id = 2
@@ -37,14 +42,16 @@ class MainWindow(wx.Frame):
         load_id = 5
         quit_id = 6
         read_id = 7
+        pipi_id = 8
 
         self.Bind(wx.EVT_MENU, self.buttons.info, id=new_id)
-        self.Bind(wx.EVT_MENU, self.buttons.graph, id=display_id)
+        self.Bind(wx.EVT_MENU, self.graph, id=display_id)
         self.Bind(wx.EVT_MENU, self.buttons.export, id=export_id)
         self.Bind(wx.EVT_MENU, self.buttons.save, id=save_id)
         self.Bind(wx.EVT_MENU, self.buttons.load, id=load_id)
         self.Bind(wx.EVT_MENU, self.buttons.stop, id=quit_id)
         self.Bind(wx.EVT_MENU, self.read, id=read_id)
+        self.Bind(wx.EVT_MENU, self.pipi, id=pipi_id)
 
         accel_tbl = wx.AcceleratorTable([
             (wx.ACCEL_CTRL, ord('N'), new_id),
@@ -54,12 +61,31 @@ class MainWindow(wx.Frame):
             (wx.ACCEL_CTRL, ord('L'), load_id),
             (wx.ACCEL_CTRL, ord('Q'), quit_id),
             (wx.ACCEL_CTRL, ord('R'), read_id),
+            (wx.ACCEL_CTRL, ord('B'), pipi_id)
         ])
         self.SetAcceleratorTable(accel_tbl)
 
     def read(self, event):
         if self.table_panel is not None and self.cont_measurement:
             self.table_panel.read_last(event)
+
+    def graph(self, event):
+        self.graph_panel = True
+        self.buttons.graph(event)
+
+    def beep(self):
+        if self.ppg is None:
+            self.ppg = PipiGraph(self.handler.data.values)
+        self.ppg.running = True
+        self.ppg.read_values()
+
+    def pipi(self, event):
+        if self.graph_panel and not self.cont_measurement:
+            if self.thread.is_alive():
+                self.ppg.running = False
+            else:
+                self.thread = threading.Thread(target=self.beep)
+                self.thread.start()
 
     def update(self):
         self.Bind(wx.EVT_TIMER, self.check)

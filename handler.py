@@ -36,6 +36,7 @@ class Handler:
     def load(self, *args):
         self.panel_handler.clear(True)
         self.window.create_table_panel()
+        self.window.cont_measurement = False
         self.data = unpickle(args[0])
         for value in self.data.values:
             self.window.table_panel.add(value[0], value[1][0], True)

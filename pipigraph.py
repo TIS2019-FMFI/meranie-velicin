@@ -14,6 +14,7 @@ class PipiGraph:
         self.max_time = self.data[-1][0]
         self.mem = dict()
         self.alert = AlertBox()
+        self.running = True
 
     def create_connection(self):
         if self.port is not None:
@@ -54,7 +55,7 @@ class PipiGraph:
         """
         reads value from the device and plays tone according to the read value
         """
-        while True:
+        while self.running:
             try:
                 if self.port is None:
                     self.alert.show('Zariadenie pipi-graf nie je pripojené!')
