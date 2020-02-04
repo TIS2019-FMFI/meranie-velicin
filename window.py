@@ -33,7 +33,7 @@ class MainWindow(wx.Frame):
         self.buttons.get_button('Načítať meranie').Bind(wx.EVT_KILL_FOCUS, self.to_grid)
 
         self.ppg = None
-        self.thread = threading.Thread(target=self.beep)
+        self.thread = None
 
     def bind_buttons(self):
         new_id = 1
@@ -66,14 +66,22 @@ class MainWindow(wx.Frame):
         ])
         self.SetAcceleratorTable(accel_tbl)
 
-    def info(self, event):
-        self.ppg = None
+    def end(self):
+        if self.ppg is not None:
+            self.ppg.running = False
+            self.ppg = None
+        if self.thread is not None:
+            self.thread.join()
+            self.thread = None
         self.graph_panel = False
+
+    def info(self, event):
+        self.end()
         self.buttons.info(event)
 
     def load(self, event):
-        self.ppg = None
-        self.graph_panel = False
+        self.end()
+        print("here")
         self.buttons.load(event)
 
     def read(self, event):
@@ -92,7 +100,7 @@ class MainWindow(wx.Frame):
 
     def pipi(self, event):
         if self.graph_panel and not self.cont_measurement:
-            if self.thread.is_alive():
+            if self.thread is not None and self.thread.is_alive():
                 self.ppg.running = False
             else:
                 self.thread = threading.Thread(target=self.beep)

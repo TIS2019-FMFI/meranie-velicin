@@ -65,7 +65,7 @@ class PipiGraph:
                 s = (s.decode("utf-8")).split()
                 value = abs(int(s[0]) - 1023)
                 if self.mem.get(value) is None:
-                    tone = self.get_value(self.get_time(value))
+                    tone = self.scale(self.get_value(self.get_time(value)))
                     self.mem[value] = tone
                 else:
                     tone = self.mem[value]
@@ -74,7 +74,16 @@ class PipiGraph:
             except serial.serialutil.SerialException:
                 return
 
+    def scale(self, value):
+        values = list(map(lambda x: x[1][0], self.data))
+        mi, ma = min(values), max(values)
+        if mi == ma:
+            return 500
+        BASE_MIN = 350
+        ROZSAH = 1000
+        ret = (value-mi)/(ma-mi) * ROZSAH + BASE_MIN
+        return int(ret)
+
     @staticmethod
     def play(value):
-        # values: 0 - 1023
-        Beep(500 + int(value*1.5), 500)
+        Beep(value, 500)
