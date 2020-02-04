@@ -16,6 +16,7 @@ class Handler:
         self.alert = AlertBox()
 
     def info(self):
+        self.window.end()
         self.buttons.input_buttons()
         self.panel_handler.info_panels()
 
@@ -24,6 +25,7 @@ class Handler:
         self.panel_handler.after_panels()
 
     def graph(self):
+        self.window.graph_panel = True
         self.buttons.graph_buttons()
         self.panel_handler.graph_panels()
 
@@ -34,6 +36,7 @@ class Handler:
             self.alert.show('Meranie sa nepodarilo uložiť!')
 
     def load(self, *args):
+        self.window.end()
         self.panel_handler.clear(True)
         self.window.create_table_panel()
         self.window.cont_measurement = False
@@ -75,11 +78,13 @@ class Handler:
             self.info()
 
     def cancel(self, error=False):
+        if self.connection.kill:
+            return
         if error and not self.connection.kill:
             self.alert.show('Device Error')
         self.connection.kill = True
         self.after()
-        print(self.data.values)
+        print("cancel", self.data.values)
 
     def main(self):
         self.buttons.start_buttons()

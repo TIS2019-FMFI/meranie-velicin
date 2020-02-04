@@ -72,6 +72,7 @@ class PipiGraph:
                 self.play(tone)
                 time.sleep(0.5)
             except serial.serialutil.SerialException:
+                self.alert.show('Zariadenie pipi-graf nie je pripojené!')
                 return
 
     def scale(self, value):
