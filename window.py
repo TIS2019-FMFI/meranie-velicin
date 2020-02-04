@@ -7,6 +7,7 @@ from handler import Handler
 import threading
 from pipigraph import PipiGraph
 
+
 class MainWindow(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, parent=None, title='Multimeter', size=(1080, 720), pos=(243, 56))
@@ -44,11 +45,11 @@ class MainWindow(wx.Frame):
         read_id = 7
         pipi_id = 8
 
-        self.Bind(wx.EVT_MENU, self.buttons.info, id=new_id)
+        self.Bind(wx.EVT_MENU, self.info, id=new_id)
         self.Bind(wx.EVT_MENU, self.graph, id=display_id)
         self.Bind(wx.EVT_MENU, self.buttons.export, id=export_id)
         self.Bind(wx.EVT_MENU, self.buttons.save, id=save_id)
-        self.Bind(wx.EVT_MENU, self.buttons.load, id=load_id)
+        self.Bind(wx.EVT_MENU, self.load, id=load_id)
         self.Bind(wx.EVT_MENU, self.buttons.stop, id=quit_id)
         self.Bind(wx.EVT_MENU, self.read, id=read_id)
         self.Bind(wx.EVT_MENU, self.pipi, id=pipi_id)
@@ -64,6 +65,16 @@ class MainWindow(wx.Frame):
             (wx.ACCEL_CTRL, ord('B'), pipi_id)
         ])
         self.SetAcceleratorTable(accel_tbl)
+
+    def info(self, event):
+        self.ppg = None
+        self.graph_panel = False
+        self.buttons.info(event)
+
+    def load(self, event):
+        self.ppg = None
+        self.graph_panel = False
+        self.buttons.load(event)
 
     def read(self, event):
         if self.table_panel is not None and self.cont_measurement:
