@@ -27,6 +27,8 @@ class Connection:
             os.system(r'driver\windows_10\CP210xVCPInstaller_x64.exe')
             ports = serial.tools.list_ports.comports()
         for device in ports:
+            if device.vid is None or device.pid is None:
+                continue
             if hex(device.vid) == '0x10c4' and hex(device.pid) == '0xea60':
                 try:
                     self.port = serial.Serial(device.device, 2400, timeout=None, parity=serial.PARITY_NONE, rtscts=1)

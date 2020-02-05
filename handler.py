@@ -81,7 +81,8 @@ class Handler:
         if self.connection.kill:
             return
         if error and not self.connection.kill:
-            self.alert.show('Device Error')
+            # self.alert.show('Device Error')
+            self.alert.show('Porucha meracieho prístroja!')
         self.connection.kill = True
         self.after()
         print("cancel", self.data.values)

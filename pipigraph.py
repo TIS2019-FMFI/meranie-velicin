@@ -21,6 +21,8 @@ class PipiGraph:
             self.port.close()
         ports = serial.tools.list_ports.comports()
         for device in ports:
+            if device.vid is None or device.pid is None:
+                continue
             if hex(device.vid) == '0x1a86' and hex(device.pid) == '0x7523':
                 try:
                     self.port = serial.Serial(device.device, 9600, timeout=None, parity=serial.PARITY_NONE, rtscts=1)

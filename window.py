@@ -80,7 +80,7 @@ class MainWindow(wx.Frame):
             self.table_panel.read_last(event)
 
     def beep(self):
-        if self.ppg is None or self.ppg.port is None:
+        if self.ppg is None or self.ppg.port is None or not self.ppg.device:
             self.ppg = PipiGraph(self.handler.data.values)
         self.ppg.running = True
         self.ppg.read_values()
