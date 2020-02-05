@@ -14,12 +14,15 @@ class PipiGraph:
         self.max_time = self.data[-1][0]
         self.mem = dict()
         self.alert = AlertBox()
+        self.running = True
 
     def create_connection(self):
         if self.port is not None:
             self.port.close()
         ports = serial.tools.list_ports.comports()
         for device in ports:
+            if device.vid is None or device.pid is None:
+                continue
             if hex(device.vid) == '0x1a86' and hex(device.pid) == '0x7523':
                 try:
                     self.port = serial.Serial(device.device, 9600, timeout=None, parity=serial.PARITY_NONE, rtscts=1)
@@ -49,22 +52,36 @@ class PipiGraph:
         """
         reads value from the device and plays tone according to the read value
         """
-        while True:
-            if self.port is None:
-                # self.alert.show('Zariadenie nie je pripojené!')
+        while self.running:
+            try:
+                if self.port is None:
+                    self.alert.show('Zariadenie pipi-graf nie je pripojené!')
+                    return
+                self.port.reset_input_buffer()
+                s = self.port.read_until(b'\n')
+                s = (s.decode("utf-8")).split()
+                value = abs(int(s[0]) - 1023)
+                if self.mem.get(value) is None:
+                    tone = self.scale(self.get_value(self.get_time(value)))
+                    self.mem[value] = tone
+                else:
+                    tone = self.mem[value]
+                self.play(tone)
+                time.sleep(0.5)
+            except serial.serialutil.SerialException:
+                self.alert.show('Zariadenie pipi-graf nie je pripojené!')
                 return
-            s = self.port.read_until(b'\n')
-            s = (s.decode("utf-8")).split()
-            value = int(s[0])
-            if self.mem.get(value) is None:
-                tone = self.get_value(self.get_time(value))
-                self.mem[value] = tone
-            else:
-                tone = self.mem[value]
-            self.play(tone)
-            time.sleep(0.5)
+
+    def scale(self, value):
+        values = list(map(lambda x: x[1][0], self.data))
+        mi, ma = min(values), max(values)
+        if mi == ma:
+            return 500
+        BASE_MIN = 350
+        ROZSAH = 1000
+        ret = (value-mi)/(ma-mi) * ROZSAH + BASE_MIN
+        return int(ret)
 
     @staticmethod
     def play(value):
-        # values: 0 - 1023
-        Beep(500 + int(value), 500)
+        Beep(value, 500)
