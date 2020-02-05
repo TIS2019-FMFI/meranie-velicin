@@ -48,11 +48,6 @@ class PipiGraph:
         mlt = (time_unit - self.data[index][0]) / delta[0]
         return round(self.data[index][1][0] + mlt*delta[1], 2)
 
-    def test(self):
-        # test for mapping values
-        for i in range(1024):
-            print(self.get_value(self.get_time(i)))
-
     def read_values(self):
         """
         reads value from the device and plays tone according to the read value

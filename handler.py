@@ -85,7 +85,7 @@ class Handler:
             self.alert.show('Porucha meracieho prístroja!')
         self.connection.kill = True
         self.after()
-        print("cancel", self.data.values)
+        # print("cancel (values)", self.data.values)
 
     def main(self):
         self.buttons.start_buttons()

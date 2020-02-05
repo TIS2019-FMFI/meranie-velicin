@@ -23,9 +23,6 @@ class Connection:
         if self.port is not None:
             self.port.close()
         ports = serial.tools.list_ports.comports()
-        if len(ports) == 0:
-            os.system(r'driver\windows_10\CP210xVCPInstaller_x64.exe')
-            ports = serial.tools.list_ports.comports()
         for device in ports:
             if device.vid is None or device.pid is None:
                 continue
