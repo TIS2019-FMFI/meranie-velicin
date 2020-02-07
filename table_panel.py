@@ -88,7 +88,7 @@ class TablePanel(wx.Panel):
         self.speak(self.grid.GetCellValue(row, col))
 
     def speak(self, value, repeat=False):
-        if ((self.last_time is None or (self.now_time - self.last_time) >= 3)
+        if ((self.last_time is None or (self.now_time - self.last_time) >= 5)
                 or self.after_measurement or repeat):
             tts = gTTS(text=str(value), lang='sk')
             fp = BytesIO()
