@@ -59,10 +59,11 @@ class MainWindow(wx.Frame):
             (wx.ACCEL_CTRL, ord('G'), display_id),
             (wx.ACCEL_CTRL, ord('E'), export_id),
             (wx.ACCEL_CTRL, ord('S'), save_id),
-            (wx.ACCEL_CTRL, ord('L'), load_id),
+            (wx.ACCEL_CTRL, ord('O'), load_id),
             (wx.ACCEL_CTRL, ord('Q'), quit_id),
             (wx.ACCEL_CTRL, ord('R'), read_id),
-            (wx.ACCEL_CTRL, ord('B'), pipi_id)
+            (wx.ACCEL_CTRL, ord('B'), pipi_id),
+            (wx.ACCEL_NORMAL, wx.WXK_F12, save_id)
         ])
         self.SetAcceleratorTable(accel_tbl)
 
