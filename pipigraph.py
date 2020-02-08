@@ -77,9 +77,9 @@ class PipiGraph:
         mi, ma = min(values), max(values)
         if mi == ma:
             return 500
-        BASE_MIN = 350
-        ROZSAH = 1000
-        ret = (value-mi)/(ma-mi) * ROZSAH + BASE_MIN
+        BASE_MIN = 400 # 350
+        RANGE = 1500 # 1000
+        ret = (value-mi)/(ma-mi) * RANGE + BASE_MIN
         return int(ret)
 
     @staticmethod

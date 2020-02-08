@@ -45,7 +45,7 @@ class InputPanel(wx.Panel):
             self.all_elements[1].SetFocus()
             return False
         name = self.user_input[0]
-        if not re.match("[A-Za-záéíĺóúýŕÁÉÍÓÚŔÝĹäôčČďĎľĽňŇšŠťŤžŽ0-9\-_]", name):
+        if not re.match("[A-Za-záéíĺóúýŕÁÉÍÓÚŔÝĹäôčČďĎľĽňŇšŠťŤžŽ0-9\-_ ]", name):
             self.alert.show('Názov merania nie je v správnom formáte!')
             self.all_elements[1].SetFocus()
             self.all_elements[1].Clear()
