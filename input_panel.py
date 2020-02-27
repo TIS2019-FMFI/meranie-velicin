@@ -45,15 +45,15 @@ class InputPanel(wx.Panel):
             self.all_elements[1].SetFocus()
             return False
         name = self.user_input[0]
-        if not re.match("[A-Za-záéíĺóúýŕÁÉÍÓÚŔÝĹäôčČďĎľĽňŇšŠťŤžŽ0-9\-_ ]", name):
+        if not re.match("[A-Za-záéíĺóúýŕÁÉÍÓÚŔÝĹäôčČďĎľĽňŇšŠťŤžŽ0-9\-_ ]*$", name):
             self.alert.show('Názov merania nie je v správnom formáte!')
             self.all_elements[1].SetFocus()
             self.all_elements[1].Clear()
             return False
         try:
             interval = float(self.user_input[1])
-            if interval <= 0:
-                self.alert.show('Interval merania musí byť väčší ako 0!')
+            if interval < 1:
+                self.alert.show('Interval merania musí byť aspoň 1 sekunda!')
                 return False
             return True
         except ValueError:
