@@ -10,7 +10,8 @@ from pipigraph import PipiGraph
 
 class MainWindow(wx.Frame):
     def __init__(self):
-        wx.Frame.__init__(self, parent=None, title='Multimeter', size=(1080, 720), pos=(243, 56))
+        wx.Frame.__init__(self, parent=None, title='Multimeter', size=(1080, 720), pos=(243, 56),
+                         style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER) # ^ wx.MAXIMIZE_BOX)
         self.splitter = MultiSplitterWindow(self)
         self.splitter.SetOrientation(wx.VERTICAL)
 

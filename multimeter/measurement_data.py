@@ -74,6 +74,8 @@ class MeasurementData:
     def pickle(self):
         if self.file_name is None:
             return False
+        if not path.exists('./data'):
+            return False
         if self.already_exists('data/' + self.file_name + '.pickle'):
             d = datetime.datetime.today()
             self.file_name += "_" + d.strftime('%d-%m-%Y')
